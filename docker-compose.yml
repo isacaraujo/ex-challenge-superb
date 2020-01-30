@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  superb-api:
+    build: ./api
+    image: superb/api:latest
+    container_name: superb-api
+    hostname: superb-api
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./api:/var/www
+    environment:
+      - NODE_ENV=development
+    networks:
+      - backend
+    ports:
+      - 3001:3000/tcp
+      - 9222:9222/tcp
+    command: bash -c 'yarn install && tsc && npm start'
+
+  superb-mongodb:
+    image: mongo:4.2.3-bionic
+    container_name: superb-mongo
+    hostname: superb-mongo
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    ports:
+      - 27017:27017/tcp
+    networks:
+      - backend
+    volumes:
+      - mongodbdata:/data/db
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mongodbdata:
+    name: mongodbdata

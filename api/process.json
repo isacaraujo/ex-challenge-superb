@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "superb-api",
+      "script": "dist/main.js",
+      "exec_mode": "fork",
+      "instance_var": "SUPERB_API",
+      "source_map_support": true,
+      "node_args": ["--inspect=0.0.0.0:9222"],
+      "watch": ["dist"],
+      "extends": "tsconfig.json"
+    }
+  ]
+}

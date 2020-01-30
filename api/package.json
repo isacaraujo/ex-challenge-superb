@@ -1,0 +1,24 @@
+{
+  "name": "superb-api",
+  "version": "1.0.0",
+  "description": "Superb Api",
+  "devDependencies": {
+    "@types/node": "13.5.2",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "eslint": "^6.8.0",
+    "ts-node": "^8.6.2"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "start": "pm2-docker start process.json",
+    "eslint": "npx eslint -c eslint.json  --ext ts ./src",
+    "build:dev": "tsc --watch",
+    "build:prod": "tsc"
+  },
+  "author": "Isac Araujo",
+  "license": "ISC"
+}
