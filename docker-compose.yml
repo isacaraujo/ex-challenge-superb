@@ -33,10 +33,31 @@ services:
       - ./backoffice:/var/www
     environment:
       - NODE_ENV=development
+      - BROWSER=none
     networks:
       - backend
     ports:
       - 3002:3000/tcp
+    command: bash -c 'yarn install && npm start'
+
+  superb-website:
+    build: ./website
+    image: superb/website:latest
+    container_name: superb-website
+    hostname: superb-website
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./website:/var/www
+    environment:
+      - NODE_ENV=development
+      - BROWSER=none
+    networks:
+      - backend
+    ports:
+      - 3003:3000/tcp
     command: bash -c 'yarn install && npm start'
 
   superb-mongodb:
