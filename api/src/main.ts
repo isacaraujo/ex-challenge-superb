@@ -2,7 +2,7 @@ import { Environments } from './Config/Environments';
 import { StartHttpServerCommand } from './Console/Command/StartHttpServerCommand';
 import { ApplicationLoader } from './Core/Application/ApplicationLoader';
 
-(async function () {
+(async function (): Promise<void> {
   const env = process.env.NODE_ENV as Environments || Environments.DEVELOPMENT;
 
   const app = new ApplicationLoader(env);

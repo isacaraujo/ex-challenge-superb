@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 import { IContainerService } from './IContainerService';
 import { IContainerStrategy } from './Strategy/IContainerStrategy';
 
