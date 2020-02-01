@@ -7,7 +7,6 @@ services:
     hostname: superb-api
     stdin_open: true
     tty: true
-    restart: unless-stopped
     working_dir: /var/www
     volumes:
       - ./api:/var/www
@@ -17,7 +16,6 @@ services:
       - backend
     ports:
       - 3001:3000/tcp
-      - 9222:9222/tcp
     command: bash -c 'yarn install && tsc && npm start'
 
   superb-backoffice:
