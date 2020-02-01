@@ -18,26 +18,6 @@ services:
       - 3001:3000/tcp
     command: bash -c 'yarn install && tsc && npm start'
 
-  superb-backoffice:
-    build: ./backoffice
-    image: superb/backoffice:latest
-    container_name: superb-backoffice
-    hostname: superb-backoffice
-    stdin_open: true
-    tty: true
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - ./backoffice:/var/www
-    environment:
-      - NODE_ENV=development
-      - BROWSER=none
-    networks:
-      - backend
-    ports:
-      - 3002:3000/tcp
-    command: bash -c 'yarn install && npm start'
-
   superb-website:
     build: ./website
     image: superb/website:latest
@@ -55,7 +35,7 @@ services:
     networks:
       - backend
     ports:
-      - 3003:3000/tcp
+      - 3002:3000/tcp
     command: bash -c 'yarn install && npm start'
 
   superb-mongodb:
