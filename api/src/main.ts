@@ -1,15 +1,21 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
- 
-const port = 3000;
- 
-const server = createServer((_request: IncomingMessage, response: ServerResponse) => {
-  response.end('Hello world!');
-});
- 
-server.listen(port, (error?: any): void => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log(`Server listening on port ${port}`);
-  }
-});
+import { Environments } from './Config/Environments';
+import { StartHttpServerCommand } from './Console/Command/StartHttpServerCommand';
+import { ApplicationLoader } from './Core/Application/ApplicationLoader';
+
+(async function () {
+  const env = process.env.NODE_ENV as Environments || Environments.DEVELOPMENT;
+
+  const app = new ApplicationLoader(env);
+
+  app.command('start-http-server', StartHttpServerCommand);
+
+  await app.run();
+}())
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((e) => {
+    console.error(e);
+
+    process.exit(-1);
+  });
