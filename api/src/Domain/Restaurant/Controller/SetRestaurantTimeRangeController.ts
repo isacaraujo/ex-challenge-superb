@@ -24,7 +24,11 @@ class SetRestaurantTimeRangeController extends ActionController implements ISetR
 
       const restaurant = await this.findCurrentRestaurant.execute();
 
-      const command = SetRestaurantTimeRangeCommand.create(restaurant, payload.workdays);
+      const command = SetRestaurantTimeRangeCommand.create(
+        restaurant,
+        payload.openTime,
+        payload.closeTime
+      );
 
       await this.setRestaurantTimeRange.execute(command);
 

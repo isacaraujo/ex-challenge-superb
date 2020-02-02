@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
-import { IWorkingDayModel } from './IWorkingDayModel';
 
 interface IRestaurantModel extends Document {
   tablesCount: number;
-  workingDays: IWorkingDayModel[];
+  openTime: number;
+  closeTime: number;
 }
 
 const IRestaurantModel = Symbol.for('IRestaurantModel');

@@ -53,7 +53,8 @@ class CreateRestaurantCommand implements IConsoleCommand {
     const restaurant = new Restaurant();
 
     restaurant.TablesCount = 0;
-    restaurant.WorkingDays = [];
+    restaurant.OpenTime = 0;
+    restaurant.CloseTime = 23;
 
     return restaurant;
   }

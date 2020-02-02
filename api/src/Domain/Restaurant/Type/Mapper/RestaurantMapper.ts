@@ -1,7 +1,6 @@
 import { serialize } from 'cerialize';
 
 import { Restaurant } from '../../Entity/Restaurant';
-import { WorkingDayMapper } from './WorkingDayMapper';
 
 class RestaurantMapper {
   public constructor(private readonly restaurant: Restaurant) {}
@@ -12,9 +11,18 @@ class RestaurantMapper {
   }
 
   @serialize
-  public get WorkingDays(): WorkingDayMapper[] {
-    return this.restaurant.WorkingDays
-      .map(w => new WorkingDayMapper(w));
+  public get OpenTime(): number {
+    return this.restaurant.OpenTime;
+  }
+
+  @serialize
+  public get CloseTime(): number {
+    return this.restaurant.RealCloseTime;
+  }
+
+  @serialize
+  public get CloseInNextDay(): boolean {
+    return this.restaurant.IsCloseInNextDay;
   }
 
   public static create(restaurant: Restaurant): RestaurantMapper {

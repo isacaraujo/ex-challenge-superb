@@ -4,7 +4,6 @@ import { UpdateRestaurantGenericError } from '../Error/Operation/UpdateRestauran
 import { IRestaurantRepository } from '../Repository/IRestaurantRepository';
 import { SetRestaurantTimeRangeCommand } from '../Type/Command/SetRestaurantTimeRangeCommand';
 import { ISetRestaurantTimeRangeOperation } from './ISetRestaurantTimeRangeOperation';
-import { WorkingDay } from '../Entity/WorkingDay';
 
 class SetRestaurantTimeRangeOperation implements ISetRestaurantTimeRangeOperation {
   public constructor(
@@ -14,15 +13,9 @@ class SetRestaurantTimeRangeOperation implements ISetRestaurantTimeRangeOperatio
 
   public async execute(command: SetRestaurantTimeRangeCommand): Promise<void> {
     const restaurant = command.Restaurant;
-    const workdaysCommand = command.Workdays;
 
     try {
-      const workdays = workdaysCommand.map(workday => 
-        WorkingDay.create(workday.dayOfWeek, workday.openTime, workday.closeTime));
-
-      restaurant.WorkingDays = workdays;
-
-      restaurant.sortWorkingDays();
+      restaurant.setTimeRange(command.OpenTime, command.CloseTime);
 
       await this.repository.update(restaurant);
     } catch (error) {
