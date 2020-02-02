@@ -10,13 +10,17 @@ import { ICreateBookingController } from '../Controller/ICreateBookingController
 import { IGetBookingController } from '../Controller/IGetBookingController';
 import { IGuestCreateBookingController } from '../Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../Controller/IListBookingController';
+import { IUpdateBookingController } from '../Controller/IUpdateBookingController';
 import { ListBookingController } from '../Controller/ListBookingController';
+import { UpdateBookingController } from '../Controller/UpdateBookingController';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { IUpdateBookingOperation } from '../Operation/IUpdateBookingOperation';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
 import { IListBookingValidation } from '../Validation/IListBookingValidation';
+import { IUpdateBookingValidation } from '../Validation/IUpdateBookingValidation';
 
 class BookingControllerProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -26,6 +30,7 @@ class BookingControllerProvider implements IProvider {
     this.registerCreateBookingController();
     this.registerListBookingController();
     this.registerGetBookingController();
+    this.registerUpdateBookingController();
   }
 
   private registerGuestCreateBookingController(): void {
@@ -97,6 +102,23 @@ class BookingControllerProvider implements IProvider {
           .get<IGetBookingOperation>(IGetBookingOperation);
 
         return new GetBookingController(getBooking);
+      });
+  }
+
+  private registerUpdateBookingController(): void {
+    this.container.register(
+      IUpdateBookingController,
+      async () => {
+        const validation = await this.container
+          .get<IUpdateBookingValidation>(IUpdateBookingValidation);
+
+        const getBooking = await this.container
+          .get<IGetBookingOperation>(IGetBookingOperation);
+
+        const updateBooking = await this.container
+          .get<IUpdateBookingOperation>(IUpdateBookingOperation);
+
+        return new UpdateBookingController(validation, getBooking, updateBooking);
       });
   }
 }

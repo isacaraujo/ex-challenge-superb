@@ -8,7 +8,9 @@ import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { IUpdateBookingOperation } from '../Operation/IUpdateBookingOperation';
 import { ListBookingOperation } from '../Operation/ListBookingOperation';
+import { UpdateBookingOperation } from '../Operation/UpdateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
 
@@ -20,6 +22,7 @@ class BookingOperationProvider implements IProvider {
     this.registerCreateBookingOperation();
     this.registerListBookingOperation();
     this.registerGetBookingOperation();
+    this.registerUpdateBookingOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -81,6 +84,20 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new GetBookingOperation(repository, logger);
+      });
+  }
+
+  private registerUpdateBookingOperation(): void {
+    this.container.register(
+      IUpdateBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new UpdateBookingOperation(repository, logger);
       });
   }
 }

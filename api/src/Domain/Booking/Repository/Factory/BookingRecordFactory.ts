@@ -1,10 +1,12 @@
+import * as _ from 'lodash';
+
 import { Booking } from '../../Entity/Booking';
 import { IBookingModel } from '../Model/IBookingModel';
 import { Guest } from '../../Entity/Guest';
 
 class BookingRecordFactory {
   public static createRecord(booking: Booking): any {
-    return {
+    const record = {
       createdAt: booking.CreatedAt,
       updatedAt: booking.UpdatedAt,
       canceledAt: booking.CanceledAt,
@@ -18,6 +20,8 @@ class BookingRecordFactory {
       totalGuests: booking.TotalGuests,
       status: booking.Status,
     };
+
+    return _.omitBy(record, value => value === undefined || value === null);
   }
 
   public static createFromRecord(record: IBookingModel): Booking {

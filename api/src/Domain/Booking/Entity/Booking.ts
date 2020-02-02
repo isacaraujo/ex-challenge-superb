@@ -145,6 +145,13 @@ class Booking {
     this.id = id;
   }
 
+  public updateGuestInfo(guestName: string, guestEmail: string, totalGuests: number): void {
+    this.guest.Name = guestName;
+    this.guest.Email = guestEmail;
+    this.totalGuests = totalGuests;
+    this.updatedAt = new Date();
+  }
+
   public static newBooking(
     date: string,
     time: number,
