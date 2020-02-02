@@ -1,10 +1,9 @@
 import { SchemaDefinition } from 'mongoose';
 
-import { WorkingDaySchema } from './WorkingDaySchema';
-
 const RestaurantSchema: SchemaDefinition = {
   tablesCount: Number,
-  workingDays: [WorkingDaySchema],
+  openTime: Number,
+  closeTime: Number,
 };
 
 export { RestaurantSchema };

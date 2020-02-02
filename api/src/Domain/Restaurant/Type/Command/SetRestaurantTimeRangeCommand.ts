@@ -1,22 +1,26 @@
 import { Restaurant } from '../../Entity/Restaurant';
-import { IRestaurantWorkdayCommand } from './IRestaurantWorkdayCommand';
 
 class SetRestaurantTimeRangeCommand {
   public constructor(
     private readonly restaurant: Restaurant,
-    private readonly workdays: IRestaurantWorkdayCommand[]
+    private readonly openTime: number,
+    private readonly closeTime: number
   ) {}
 
   public get Restaurant(): Restaurant {
     return this.restaurant;
   }
 
-  public get Workdays(): IRestaurantWorkdayCommand[] {
-    return this.workdays;
+  public get OpenTime(): number {
+    return this.openTime;
   }
 
-  public static create(restaurant: Restaurant, workdays: IRestaurantWorkdayCommand[]): SetRestaurantTimeRangeCommand {
-    return new SetRestaurantTimeRangeCommand(restaurant, workdays);
+  public get CloseTime(): number {
+    return this.closeTime;
+  }
+
+  public static create(restaurant: Restaurant, openTime: number, closeTime: number): SetRestaurantTimeRangeCommand {
+    return new SetRestaurantTimeRangeCommand(restaurant, openTime, closeTime);
   }
 }
 

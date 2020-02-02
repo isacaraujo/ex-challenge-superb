@@ -9,15 +9,8 @@ class SetRestaurantTimeRangeValidation implements ISetRestaurantTimeRangeValidat
 
   public constructor() {
     const schema = Joi.object({
-      workdays: Joi.array().items(
-        Joi.object().keys({
-          dayOfWeek: Joi.number().integer().min(0).max(6).required(),
-          openTime: Joi.number().integer().min(0).max(23).required(),
-          closeTime: Joi.number().integer().min(0).max(23).required(),
-        })
-      )
-      .min(1)
-      .max(7)
+      openTime: Joi.number().integer().min(0).max(23).required(),
+      closeTime: Joi.number().integer().min(0).max(23).required(),
     });
 
     this.validator = new JoiSchemaValidator(schema);

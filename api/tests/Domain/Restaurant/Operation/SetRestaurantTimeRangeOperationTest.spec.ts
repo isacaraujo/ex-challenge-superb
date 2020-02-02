@@ -12,9 +12,6 @@ import {
     RestaurantRepository
 } from '../../../../src/Domain/Restaurant/Repository/RestaurantRepository';
 import {
-    IRestaurantWorkdayCommand
-} from '../../../../src/Domain/Restaurant/Type/Command/IRestaurantWorkdayCommand';
-import {
     SetRestaurantTimeRangeCommand
 } from '../../../../src/Domain/Restaurant/Type/Command/SetRestaurantTimeRangeCommand';
 import { UpdateRestaurantGenericError } from '../../../../src/Domain/Restaurant/Error/Operation/UpdateRestaurantGenericError';
@@ -32,11 +29,8 @@ describe('SetRestaurantTimeRangeOperation', () => {
 
   let command: SetRestaurantTimeRangeCommand;
 
-  const workday: IRestaurantWorkdayCommand = {
-    dayOfWeek: 1,
-    openTime: 10,
-    closeTime: 20
-  };
+  let openTime = 10;
+  let closeTime = 20;
 
   const restaurant = new Restaurant();
 
@@ -48,7 +42,7 @@ describe('SetRestaurantTimeRangeOperation', () => {
 
     operation = new SetRestaurantTimeRangeOperation(repository, logger);
 
-    command = new SetRestaurantTimeRangeCommand(restaurant, [workday]);
+    command = new SetRestaurantTimeRangeCommand(restaurant, openTime, closeTime);
   });
 
   afterEach(() => {
