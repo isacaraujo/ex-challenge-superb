@@ -1,17 +1,24 @@
+import { Restaurant } from '../../../../Restaurant/Entity/Restaurant';
+
 class CreateBookingCommand {
   public constructor(
-    private date: string,
-    private time: string,
-    private guestName: string,
-    private guestEmail: string,
-    private totalGuests: number
+    private readonly restaurant: Restaurant,
+    private readonly date: string,
+    private readonly time: number,
+    private readonly guestName: string,
+    private readonly guestEmail: string,
+    private readonly totalGuests: number
   ) {}
+
+  public get Restaurant(): Restaurant {
+    return this.restaurant;
+  }
 
   public get Date(): string {
     return this.date;
   }
 
-  public get Time(): string {
+  public get Time(): number {
     return this.time;
   }
 
@@ -27,8 +34,9 @@ class CreateBookingCommand {
     return this.totalGuests;
   }
 
-  public static factory(data: any): CreateBookingCommand {
+  public static create(restaurant: Restaurant, data: any): CreateBookingCommand {
     return new CreateBookingCommand(
+      restaurant,
       data.date,
       data.time,
       data.guestName,

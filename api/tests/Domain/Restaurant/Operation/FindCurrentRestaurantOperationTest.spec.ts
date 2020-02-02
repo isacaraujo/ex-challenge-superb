@@ -18,7 +18,7 @@ import { FindRestaurantGenericError } from '../../../../src/Domain/Restaurant/Er
 
 chai.use(chaiAsPromised);
 
-describe('CreateBookingOperation', () => {
+describe('FindCurrentRestaurantOperation', () => {
   let sandbox: sinon.SinonSandbox;
 
   let logger: sinon.SinonStubbedInstance<Logger>;

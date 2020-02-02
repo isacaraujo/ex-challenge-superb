@@ -12,7 +12,7 @@ import { IBookingModel } from './Model/IBookingModel';
 import { BookingSchema } from './Schema/BookingSchema';
 
 class BookingRepository extends MongooseRepository<IBookingModel> implements IBookingRepository {
-  private static readonly COLLECTION = 'booking';
+  public static readonly COLLECTION = 'booking';
 
   public constructor(connection: IMongooseConnection) {
     super(connection, BookingRepository.COLLECTION, BookingSchema);

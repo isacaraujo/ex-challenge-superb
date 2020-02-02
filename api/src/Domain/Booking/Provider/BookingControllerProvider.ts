@@ -1,8 +1,11 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { IProvider } from '../../../Core/Provider/IProvider';
+import {
+    IFindCurrentRestaurantOperation
+} from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 import { CreateBookingController } from '../Controller/CreateBookingController';
 import { ICreateBookingController } from '../Controller/ICreateBookingController';
-import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
 
 class BookingControllerProvider implements IProvider {
@@ -16,13 +19,20 @@ class BookingControllerProvider implements IProvider {
     this.container.register(
       ICreateBookingController,
       async () => {
+        const findRestaurant = await this.container
+          .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
+
         const createBooking = await this.container
-          .get<ICreateBookingOperation>(ICreateBookingOperation);
+          .get<IGuestCreateBookingOperation>(IGuestCreateBookingOperation);
 
         const validation = await this.container
           .get<ICreateBookingValidation>(ICreateBookingValidation);
 
-        const controller = new CreateBookingController(createBooking, validation);
+        const controller = new CreateBookingController(
+          findRestaurant,
+          createBooking,
+          validation
+        );
 
         return controller;
       }
