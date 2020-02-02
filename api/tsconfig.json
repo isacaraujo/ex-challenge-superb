@@ -22,6 +22,7 @@
   },
   "exclude": [
     "dist/",
-    "tests/"
+    "node_modules/",
+    "**/tests/**"
   ]
 }

@@ -30,6 +30,10 @@ class Restaurant {
   public set WorkingDays(workingDays: WorkingDay[]) {
     this.workingDays = workingDays;
   }
+
+  public incrementTable(): void {
+    this.tablesCount += 1;
+  }
 }
 
 export { Restaurant };

@@ -28,7 +28,21 @@ class RestaurantRepository extends MongooseRepository<IRestaurantModel> implemen
 
       restaurant.Id = newRecord.id;
     } catch (error) {
-      throw new SaveRecordError('Unable to create restaurant', error);
+      throw new SaveRecordError(`SaveRecordError: ${error.message}`, error);
+    }
+  }
+
+  public async update(restaurant: Restaurant): Promise<void> {
+    try {
+      const record = RestaurantRecordFactory.createRecord(restaurant);
+
+      const conditions = {_id: restaurant.Id };
+
+      const changeset = { '$set': record };
+
+      await this.documentModel.updateOne(conditions, changeset);
+    } catch (error) {
+      throw new SaveRecordError(`SaveRecordError: ${error.message}`, error);
     }
   }
 

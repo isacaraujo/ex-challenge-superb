@@ -4,11 +4,13 @@ import { IHttpServer } from '../Core/Http/Server/IHttpServer';
 import { HealthRoute } from './HealthRoute';
 import { IRoute } from './IRoute';
 import { BookingRoute } from './v1/BookingRoute';
+import { RestaurantRoute } from './v1/RestaurantRoute';
 
 class RouteRegistry {
   private static readonly REGISTERED_ROUTES: INewable<IRoute>[] = [
     HealthRoute,
     BookingRoute,
+    RestaurantRoute,
   ];
 
   public static async registerAll(container: IContainerService, httpServer: IHttpServer): Promise<void> {
