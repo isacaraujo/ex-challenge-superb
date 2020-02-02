@@ -34,6 +34,10 @@ class Restaurant {
   public incrementTable(): void {
     this.tablesCount += 1;
   }
+
+  public sortWorkingDays(): void {
+    this.workingDays.sort((a, b) => a.DayOfWeek - b.DayOfWeek)
+  }
 }
 
 export { Restaurant };

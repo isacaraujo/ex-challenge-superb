@@ -3,7 +3,8 @@ import { SchemaDefinition } from 'mongoose';
 const WorkingDaySchema: SchemaDefinition = {
   dayOfWeek: Number,
   openTime: Number,
-  closeTimeTime: Number,
+  closeTime: Number,
+  _id: { id: false },
 };
 
 export { WorkingDaySchema };

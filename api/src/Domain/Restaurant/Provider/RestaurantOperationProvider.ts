@@ -5,6 +5,8 @@ import { AddRestaurantTableOperation } from '../Operation/AddRestaurantTableOper
 import { FindCurrentRestaurantOperation } from '../Operation/FindCurrentRestaurantOperation';
 import { IAddRestaurantTableOperation } from '../Operation/IAddRestaurantTableOperation';
 import { IFindCurrentRestaurantOperation } from '../Operation/IFindCurrentRestaurantOperation';
+import { ISetRestaurantTimeRangeOperation } from '../Operation/ISetRestaurantTimeRangeOperation';
+import { SetRestaurantTimeRangeOperation } from '../Operation/SetRestaurantTimeRangeOperation';
 import { IRestaurantRepository } from '../Repository/IRestaurantRepository';
 
 class RestaurantOperationProvider implements IProvider {
@@ -13,6 +15,7 @@ class RestaurantOperationProvider implements IProvider {
   public register(): void {
     this.registerFindRestaurantOperation();
     this.registerAddRestaurantTableOperation();
+    this.registerSetRestaurantTimeRangeOperation();
   }
 
   private registerFindRestaurantOperation(): void {
@@ -40,6 +43,20 @@ class RestaurantOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new AddRestaurantTableOperation(repository, logger);
+      });
+  }
+
+  private registerSetRestaurantTimeRangeOperation(): void {
+    this.container.register(
+      ISetRestaurantTimeRangeOperation,
+      async () => {
+        const repository = await this.container
+          .get<IRestaurantRepository>(IRestaurantRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new SetRestaurantTimeRangeOperation(repository, logger);
       });
   }
 }
