@@ -18,10 +18,12 @@ class ApplicationLoader implements IApplicationLoader {
 
   public constructor(private readonly env: Environments) {}
 
-  public command(name: string, newableCommand: INewable<IConsoleCommand>): void {
+  public command(name: string, newableCommand: INewable<IConsoleCommand>): ApplicationLoader {
     Commander
       .command(name)
       .action(async () => this.invoke(newableCommand));
+
+    return this;
   }
 
   public async run(): Promise<void> {

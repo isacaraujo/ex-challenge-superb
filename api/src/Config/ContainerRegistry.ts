@@ -8,11 +8,23 @@ import { BookingOperationProvider } from '../Domain/Booking/Provider/BookingOper
 import { BookingRepositoryProvider } from '../Domain/Booking/Provider/BookingRepositoryProvider';
 import { BookingValidationProvider } from '../Domain/Booking/Provider/BookingValidationProvider';
 import { HealthProvider } from '../Domain/Health/Provider/HealthProvider';
+import {
+    RestaurantControllerProvider
+} from '../Domain/Restaurant/Provider/RestaurantControllerProvider';
+import {
+    RestaurantOperationProvider
+} from '../Domain/Restaurant/Provider/RestaurantOperationProvider';
+import {
+    RestaurantRepositoryProvider
+} from '../Domain/Restaurant/Provider/RestaurantRepositoryProvider';
 
 class ContainerRegistry {
   private static readonly REGISTERED_PROVIDERS: INewable<IProvider>[] = [
     MongooseProvider,
     LoggerProvider,
+    RestaurantRepositoryProvider,
+    RestaurantOperationProvider,
+    RestaurantControllerProvider,
     BookingRepositoryProvider,
     BookingOperationProvider,
     BookingValidationProvider,

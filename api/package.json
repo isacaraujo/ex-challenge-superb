@@ -48,7 +48,8 @@
     "eslint": "npx eslint -c eslint.json  --ext ts ./src",
     "build:dev": "tsc --watch",
     "build:prod": "tsc",
-    "test:unit": "NODE_ENV=test mocha -C -r ts-node/register tests/**/*.spec.ts"
+    "test:unit": "NODE_ENV=test mocha -C -r ts-node/register tests/**/*.spec.ts",
+    "restaurant:create": "node dist/main.js create-restaurant"
   },
   "author": "Isac Araujo",
   "license": "ISC"
