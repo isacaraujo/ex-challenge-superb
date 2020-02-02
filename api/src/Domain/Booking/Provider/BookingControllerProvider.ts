@@ -4,12 +4,15 @@ import {
     IFindCurrentRestaurantOperation
 } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 import { CreateBookingController } from '../Controller/CreateBookingController';
+import { GetBookingController } from '../Controller/GetBookingController';
 import { GuestCreateBookingController } from '../Controller/GuestCreateBookingController';
 import { ICreateBookingController } from '../Controller/ICreateBookingController';
+import { IGetBookingController } from '../Controller/IGetBookingController';
 import { IGuestCreateBookingController } from '../Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../Controller/IListBookingController';
 import { ListBookingController } from '../Controller/ListBookingController';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
@@ -22,6 +25,7 @@ class BookingControllerProvider implements IProvider {
     this.registerGuestCreateBookingController();
     this.registerCreateBookingController();
     this.registerListBookingController();
+    this.registerGetBookingController();
   }
 
   private registerGuestCreateBookingController(): void {
@@ -82,8 +86,18 @@ class BookingControllerProvider implements IProvider {
           .get<IListBookingOperation>(IListBookingOperation);
 
         return new ListBookingController(validation, listBooking);
-      }
-    )
+      });
+  }
+
+  private registerGetBookingController(): void {
+    this.container.register(
+      IGetBookingController,
+      async () => {
+        const getBooking = await this.container
+          .get<IGetBookingOperation>(IGetBookingOperation);
+
+        return new GetBookingController(getBooking);
+      });
   }
 }
 

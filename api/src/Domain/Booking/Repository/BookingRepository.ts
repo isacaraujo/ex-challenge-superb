@@ -12,6 +12,7 @@ import { IBookingModel } from './Model/IBookingModel';
 import { BookingSchema } from './Schema/BookingSchema';
 import { BookingStatus } from '../Entity/BookingStatus';
 import { FindRecordError } from '../../../Core/Error/Repository/FindRecordError';
+import { RecordNotFoundError } from '../../../Core/Error/Repository/RecordNotFoundError';
 
 class BookingRepository extends MongooseRepository<IBookingModel> implements IBookingRepository {
   public static readonly COLLECTION = 'booking';
@@ -44,6 +45,22 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
     } catch (error) {
       throw new FindRecordError('Find all bookings by date failed', error);
     }
+  }
+
+  public async findOneById(id: string): Promise<Booking> {
+    let record: IBookingModel;
+
+    try {
+      record = await this.documentModel.findById(id);
+    } catch (error) {
+      throw new FindRecordError('Find booking by id failed', error);
+    }
+
+    if (undefined === record) {
+      throw new RecordNotFoundError('Booking not found');
+    }
+
+    return BookingRecordFactory.createFromRecord(record);
   }
 }
 
