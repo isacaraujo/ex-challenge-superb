@@ -10,6 +10,8 @@ import { BookingRecordFactory } from './Factory/BookingRecordFactory';
 import { IBookingRepository } from './IBookingRepository';
 import { IBookingModel } from './Model/IBookingModel';
 import { BookingSchema } from './Schema/BookingSchema';
+import { BookingStatus } from '../Entity/BookingStatus';
+import { FindRecordError } from '../../../Core/Error/Repository/FindRecordError';
 
 class BookingRepository extends MongooseRepository<IBookingModel> implements IBookingRepository {
   public static readonly COLLECTION = 'booking';
@@ -27,6 +29,20 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
       booking.setId(newRecord.id);
     } catch (error) {
       throw new SaveRecordError(`SaveRecordError: ${error.message}`, error);
+    }
+  }
+
+  public async findAllBookingsByDate(date: string): Promise<Booking[]> {
+    try {
+      const collection = await this.documentModel.find({
+        date,
+        status: { $in: [BookingStatus.CONFIRMED, BookingStatus.SCHEDULED] }
+      });
+
+      return collection.map<Booking>(record =>
+        BookingRecordFactory.createFromRecord(record));
+    } catch (error) {
+      throw new FindRecordError('Find all bookings by date failed', error);
     }
   }
 }

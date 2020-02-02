@@ -1,12 +1,14 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
+import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
 import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
+import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
+import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { ListBookingOperation } from '../Operation/ListBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
-import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
-import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -14,6 +16,7 @@ class BookingOperationProvider implements IProvider {
   public register(): void {
     this.registerGuestCreateBookingOperation();
     this.registerCreateBookingOperation();
+    this.registerListBookingOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -47,6 +50,20 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new CreateBookingOperation(repository, statsRepository, logger);
+      });
+  }
+
+  private registerListBookingOperation(): void {
+    this.container.register(
+      IListBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new ListBookingOperation(repository, logger);
       });
   }
 }

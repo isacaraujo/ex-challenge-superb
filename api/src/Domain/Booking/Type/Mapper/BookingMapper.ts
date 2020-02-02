@@ -59,6 +59,10 @@ class BookingMapper {
   public static create(booking: Booking): BookingMapper {
     return new BookingMapper(booking);
   }
+
+  public static createFromCollection(bookings: Booking[]): BookingMapper[] {
+    return bookings.map(booking => BookingMapper.create(booking));
+  }
 }
 
 export { BookingMapper };

@@ -3,13 +3,17 @@ import { IProvider } from '../../../Core/Provider/IProvider';
 import {
     IFindCurrentRestaurantOperation
 } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
-import { GuestCreateBookingController } from '../Controller/GuestCreateBookingController';
-import { IGuestCreateBookingController } from '../Controller/IGuestCreateBookingController';
-import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
-import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
-import { ICreateBookingController } from '../Controller/ICreateBookingController';
 import { CreateBookingController } from '../Controller/CreateBookingController';
+import { GuestCreateBookingController } from '../Controller/GuestCreateBookingController';
+import { ICreateBookingController } from '../Controller/ICreateBookingController';
+import { IGuestCreateBookingController } from '../Controller/IGuestCreateBookingController';
+import { IListBookingController } from '../Controller/IListBookingController';
+import { ListBookingController } from '../Controller/ListBookingController';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
+import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
+import { IListBookingValidation } from '../Validation/IListBookingValidation';
 
 class BookingControllerProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -17,6 +21,7 @@ class BookingControllerProvider implements IProvider {
   public register(): void {
     this.registerGuestCreateBookingController();
     this.registerCreateBookingController();
+    this.registerListBookingController();
   }
 
   private registerGuestCreateBookingController(): void {
@@ -64,6 +69,21 @@ class BookingControllerProvider implements IProvider {
 
         return controller;
       });
+  }
+
+  private registerListBookingController(): void {
+    this.container.register(
+      IListBookingController,
+      async () => {
+        const validation = await this.container
+          .get<IListBookingValidation>(IListBookingValidation);
+
+        const listBooking = await this.container
+          .get<IListBookingOperation>(IListBookingOperation);
+
+        return new ListBookingController(validation, listBooking);
+      }
+    )
   }
 }
 
