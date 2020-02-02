@@ -4,7 +4,7 @@ import { IHttpQueryParameters } from './IHttpQueryParameters';
 
 interface IHttpRequest {
   Method: HttpRequestMethod;
-  Body: string;
+  Body: any;
   Headers: IHttpHeaders;
   Query: IHttpQueryParameters;
   Params: IHttpRequestParameters;

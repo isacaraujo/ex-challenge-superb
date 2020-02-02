@@ -3,28 +3,42 @@ import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import * as sinon from 'sinon';
 
-import { SaveRecordError } from '../../../../src/Core/Error/Repository/SaveRecordError';
 import { Logger } from '../../../../src/Core/Logger/Logger';
 import { Restaurant } from '../../../../src/Domain/Restaurant/Entity/Restaurant';
 import {
-    UpdateRestaurantGenericError
-} from '../../../../src/Domain/Restaurant/Error/Operation/UpdateRestaurantGenericError';
-import {
-    AddRestaurantTableOperation
-} from '../../../../src/Domain/Restaurant/Operation/AddRestaurantTableOperation';
+    SetRestaurantTimeRangeOperation
+} from '../../../../src/Domain/Restaurant/Operation/SetRestaurantTimeRangeOperation';
 import {
     RestaurantRepository
 } from '../../../../src/Domain/Restaurant/Repository/RestaurantRepository';
+import {
+    IRestaurantWorkdayCommand
+} from '../../../../src/Domain/Restaurant/Type/Command/IRestaurantWorkdayCommand';
+import {
+    SetRestaurantTimeRangeCommand
+} from '../../../../src/Domain/Restaurant/Type/Command/SetRestaurantTimeRangeCommand';
+import { UpdateRestaurantGenericError } from '../../../../src/Domain/Restaurant/Error/Operation/UpdateRestaurantGenericError';
+import { SaveRecordError } from '../../../../src/Core/Error/Repository/SaveRecordError';
 
 chai.use(chaiAsPromised);
 
-describe('AddRestaurantTableOperation', () => {
+describe('SetRestaurantTimeRangeOperation', () => {
   let sandbox: sinon.SinonSandbox;
 
   let logger: sinon.SinonStubbedInstance<Logger>;
   let repository: sinon.SinonStubbedInstance<RestaurantRepository>;
 
-  let operation: AddRestaurantTableOperation;
+  let operation: SetRestaurantTimeRangeOperation;
+
+  let command: SetRestaurantTimeRangeCommand;
+
+  const workday: IRestaurantWorkdayCommand = {
+    dayOfWeek: 1,
+    openTime: 10,
+    closeTime: 20
+  };
+
+  const restaurant = new Restaurant();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -32,7 +46,9 @@ describe('AddRestaurantTableOperation', () => {
     logger = sandbox.createStubInstance(Logger);
     repository = sandbox.createStubInstance(RestaurantRepository);
 
-    operation = new AddRestaurantTableOperation(repository, logger);
+    operation = new SetRestaurantTimeRangeOperation(repository, logger);
+
+    command = new SetRestaurantTimeRangeCommand(restaurant, [workday]);
   });
 
   afterEach(() => {
@@ -40,8 +56,6 @@ describe('AddRestaurantTableOperation', () => {
   });
 
   describe('when restaurant was updated', () => {
-    const restaurant = new Restaurant();
-
     beforeEach(() => {
       repository.update
         .withArgs(restaurant)
@@ -49,19 +63,14 @@ describe('AddRestaurantTableOperation', () => {
     });
 
     it('should be resolved', async () => {
-      const spyRestaurantIncrementTable = sandbox.spy(restaurant, 'incrementTable');
-
-      await chai.expect(operation.execute(restaurant))
+      await chai.expect(operation.execute(command))
         .to.be.fulfilled;
-
-      chai.assert(spyRestaurantIncrementTable.calledOnce);
     });
   });
 
   describe('when repository throws SaveRecordError', () => {
     const originalError = new Error('failed')
     const error = new SaveRecordError('sample failed', originalError);
-    const restaurant = new Restaurant();
 
     beforeEach(() => {
       repository.update
@@ -70,14 +79,11 @@ describe('AddRestaurantTableOperation', () => {
     });
 
     it('throws UpdateRestaurantGenericError', async () => {
-      const spyRestaurantIncrementTable = sandbox.spy(restaurant, 'incrementTable');
-
-      await chai.expect(operation.execute(restaurant))
+      await chai.expect(operation.execute(command))
         .to.eventually
         .rejected
         .instanceOf(UpdateRestaurantGenericError);
 
-      chai.assert(spyRestaurantIncrementTable.calledOnce);
       chai.assert(
         logger.error.withArgs(sinon.match.string, { error: originalError }).calledOnce);
     });

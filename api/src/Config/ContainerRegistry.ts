@@ -17,6 +17,7 @@ import {
 import {
     RestaurantRepositoryProvider
 } from '../Domain/Restaurant/Provider/RestaurantRepositoryProvider';
+import { RestaurantValidationProvider } from '../Domain/Restaurant/Provider/RestaurantValidationProvider';
 
 class ContainerRegistry {
   private static readonly REGISTERED_PROVIDERS: INewable<IProvider>[] = [
@@ -24,6 +25,7 @@ class ContainerRegistry {
     LoggerProvider,
     RestaurantRepositoryProvider,
     RestaurantOperationProvider,
+    RestaurantValidationProvider,
     RestaurantControllerProvider,
     BookingRepositoryProvider,
     BookingOperationProvider,

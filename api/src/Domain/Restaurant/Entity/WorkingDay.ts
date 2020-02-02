@@ -28,6 +28,15 @@ class WorkingDay {
   public set CloseTime(closeTime: number) {
     this.closeTime = closeTime;
   }
+
+  public static create(dayOfWeek: number, openTime: number, closeTime: number): WorkingDay {
+    const day = new WorkingDay();
+    day.DayOfWeek = dayOfWeek;
+    day.OpenTime = openTime;
+    day.CloseTime = closeTime;
+
+    return day;
+  }
 }
 
 export { WorkingDay };
