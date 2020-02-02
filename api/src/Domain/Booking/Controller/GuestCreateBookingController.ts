@@ -1,32 +1,31 @@
 import { ActionController } from '../../../Core/Controller/ActionController';
 import { IHttpRequest } from '../../../Core/Http/Type/IHttpRequest';
 import { IHttpResponse } from '../../../Core/Http/Type/IHttpResponse';
-import {
-    IFindCurrentRestaurantOperation
-} from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
-import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { CreateBookingCommand } from '../Type/Command/Operation/CreateBookingCommand';
 import { BookingMapper } from '../Type/Mapper/BookingMapper';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
-import { ICreateBookingController } from './ICreateBookingController';
+import { IGuestCreateBookingController } from './IGuestCreateBookingController';
+import { IFindCurrentRestaurantOperation } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 
-class CreateBookingController extends ActionController implements ICreateBookingController {
+class GuestCreateBookingController extends ActionController implements IGuestCreateBookingController {
   public constructor(
-    private readonly validation: ICreateBookingValidation,
     private readonly findRestaurant: IFindCurrentRestaurantOperation,
-    private readonly createBooking: ICreateBookingOperation
+    private readonly createBooking: IGuestCreateBookingOperation,
+    private readonly createBookingValidation: ICreateBookingValidation
   ) {
     super();
   }
+
   public async perform(request: IHttpRequest): Promise<IHttpResponse> {
     try {
-      const payload = request.Body;
+      const data = request.Body;
 
-      this.validation.validate(payload);
+      this.createBookingValidation.validate(data);
 
       const restaurant = await this.findRestaurant.execute();
 
-      const command = CreateBookingCommand.create(restaurant, payload);
+      const command = CreateBookingCommand.create(restaurant, data);
 
       const booking = await this.createBooking.execute(command);
 
@@ -39,4 +38,4 @@ class CreateBookingController extends ActionController implements ICreateBooking
   }
 }
 
-export { CreateBookingController };
+export { GuestCreateBookingController };
