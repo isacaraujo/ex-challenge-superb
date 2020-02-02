@@ -8,7 +8,7 @@ const BookingSchema: SchemaDefinition = {
   canceledAt: Date,
   confirmedAt: Date,
   date: String,
-  time: String,
+  time: Number,
   guest: BookingGuestSchema,
   totalGuests: Number,
   status: String,

@@ -1,15 +1,17 @@
 import { ActionController } from '../../../Core/Controller/ActionController';
 import { IHttpRequest } from '../../../Core/Http/Type/IHttpRequest';
 import { IHttpResponse } from '../../../Core/Http/Type/IHttpResponse';
-import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { CreateBookingCommand } from '../Type/Command/Operation/CreateBookingCommand';
 import { BookingMapper } from '../Type/Mapper/BookingMapper';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
 import { ICreateBookingController } from './ICreateBookingController';
+import { IFindCurrentRestaurantOperation } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 
 class CreateBookingController extends ActionController implements ICreateBookingController {
   public constructor(
-    private readonly createBooking: ICreateBookingOperation,
+    private readonly findRestaurant: IFindCurrentRestaurantOperation,
+    private readonly createBooking: IGuestCreateBookingOperation,
     private readonly createBookingValidation: ICreateBookingValidation
   ) {
     super();
@@ -21,7 +23,9 @@ class CreateBookingController extends ActionController implements ICreateBooking
 
       this.createBookingValidation.validate(data);
 
-      const command = CreateBookingCommand.factory(data);
+      const restaurant = await this.findRestaurant.execute();
+
+      const command = CreateBookingCommand.create(restaurant, data);
 
       const booking = await this.createBooking.execute(command);
 

@@ -1,28 +1,32 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
-import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
-import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
+import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
+import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
 
   public register(): void {
-    this.registerCreateBookingOperation();
+    this.registerGuestCreateBookingOperation();
   }
 
-  private registerCreateBookingOperation(): void {
+  private registerGuestCreateBookingOperation(): void {
     this.container.register(
-      ICreateBookingOperation,
+      IGuestCreateBookingOperation,
       async () => {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
+        const statsRepository = await this.container
+          .get<IBookingStatsRepository>(IBookingStatsRepository);
+
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new CreateBookingOperation(repository, logger);
+        return new GuestCreateBookingOperation(repository, statsRepository, logger);
       }
     )
   }

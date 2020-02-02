@@ -1,7 +1,12 @@
+import * as moment from 'moment';
+
 import { BookingStatus } from './BookingStatus';
 import { Guest } from './Guest';
+import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 
 class Booking {
+  public static readonly DURATION_IN_HOURS = 1;
+
   private id: string;
 
   private createdAt: Date;
@@ -14,7 +19,7 @@ class Booking {
 
   private date: string;
 
-  private time: string;
+  private time: number;
 
   private guest: Guest;
 
@@ -26,40 +31,100 @@ class Booking {
     return this.id;
   }
 
+  public set Id(id: string) {
+    this.id = id;
+  }
+
   public get CreatedAt(): Date {
     return this.createdAt;
+  }
+
+  public set CreatedAt(createdAt: Date) {
+    this.createdAt = createdAt;
   }
 
   public get UpdatedAt(): Date {
     return this.updatedAt;
   }
 
+  public set UpdatedAt(updatedAt: Date) {
+    this.updatedAt = updatedAt;
+  }
+
   public get CanceledAt(): Date {
     return this.canceledAt;
+  }
+
+  public set CanceledAt(canceledAt: Date) {
+    this.canceledAt = canceledAt;
   }
 
   public get ConfirmatedAt(): Date {
     return this.confirmatedAt;
   }
 
+  public set ConfirmatedAt(confirmatedAt: Date) {
+    this.confirmatedAt = confirmatedAt;
+  }
+
   public get Date(): string {
     return this.date;
   }
 
-  public get Time(): string {
+  public get Time(): number {
     return this.time;
+  }
+
+  public set Time(time: number) {
+    this.time = time;
+  }
+
+  public get IsReservedToNextDay(): boolean {
+    return this.time >= Restaurant.DAY_IN_HOURS;
+  }
+
+  public get RealTime(): number {
+    if (this.IsReservedToNextDay) {
+      return this.time - Restaurant.DAY_IN_HOURS;
+    }
+
+    return this.time;
+  }
+
+  public get ReservationDate(): Date {
+    const reservationDate = moment(this.date);
+
+    reservationDate.hour(this.RealTime);
+
+    if (this.IsReservedToNextDay) {
+      reservationDate.add(1, 'day');
+    }
+
+    return reservationDate.toDate();
   }
 
   public get Guest(): Guest {
     return this.guest;
   }
 
+  public set Guest(guest: Guest) {
+    this.guest = guest;
+  }
+
   public get TotalGuests(): number {
     return this.totalGuests;
   }
 
+  public set TotalGuests(totalGuests: number) {
+    this.totalGuests = totalGuests;
+  }
+
   public get Status(): BookingStatus {
     return this.status;
+  }
+
+  public set Status(status: BookingStatus) {
+    this.status = status;
   }
 
   public confirm(): void {
@@ -78,7 +143,7 @@ class Booking {
 
   public static newBooking(
     date: string,
-    time: string,
+    time: number,
     guestName: string,
     guestEmail: string,
     totalGuests: number

@@ -9,7 +9,7 @@ interface IBookingModel extends Document {
   canceledAt: Date;
   confirmedAt: Date;
   date: string;
-  time: string;
+  time: number;
   guest: IBookingGuestModel;
   totalGuests: number;
   status: BookingStatus;
