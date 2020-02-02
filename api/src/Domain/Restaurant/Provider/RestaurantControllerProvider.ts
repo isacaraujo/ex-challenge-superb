@@ -1,13 +1,15 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { AddRestaurantTableController } from '../Controller/AddRestaurantTableController';
+import { GetRestaurantInfoController } from '../Controller/GetRestaurantInfoController';
 import { IAddRestaurantTableController } from '../Controller/IAddRestaurantTableController';
+import { IGetRestaurantInfoController } from '../Controller/IGetRestaurantInfoController';
+import { ISetRestaurantTimeRangeController } from '../Controller/ISetRestaurantTimeRangeController';
+import { SetRestaurantTimeRangeController } from '../Controller/SetRestaurantTimeRangeController';
 import { IAddRestaurantTableOperation } from '../Operation/IAddRestaurantTableOperation';
 import { IFindCurrentRestaurantOperation } from '../Operation/IFindCurrentRestaurantOperation';
-import { ISetRestaurantTimeRangeController } from '../Controller/ISetRestaurantTimeRangeController';
 import { ISetRestaurantTimeRangeOperation } from '../Operation/ISetRestaurantTimeRangeOperation';
 import { ISetRestaurantTimeRangeValidation } from '../Validation/ISetRestaurantTimeRangeValidation';
-import { SetRestaurantTimeRangeController } from '../Controller/SetRestaurantTimeRangeController';
 
 class RestaurantControllerProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -15,6 +17,7 @@ class RestaurantControllerProvider implements IProvider {
   public register(): void {
     this.registerAddRestaurantTableController();
     this.registerSetRestaurantTimeRangeController();
+    this.registerGetRestaurantInfoController();
   }
 
   private registerAddRestaurantTableController(): void {
@@ -48,6 +51,19 @@ class RestaurantControllerProvider implements IProvider {
           validation,
           findCurrentRestaurant,
           setTimeRange
+        );
+      });
+  }
+
+  private registerGetRestaurantInfoController(): void {
+    this.container.register(
+      IGetRestaurantInfoController,
+      async () => {
+        const findCurrentRestaurant = await this.container
+          .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
+
+        return new GetRestaurantInfoController(
+          findCurrentRestaurant
         );
       });
   }

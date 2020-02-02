@@ -10,10 +10,12 @@ class WorkingDayMapper {
     return this.workingDay.DayOfWeek;
   }
 
+  @serialize
   public get OpenTime(): number {
     return this.workingDay.OpenTime;
   }
 
+  @serialize
   public get CloseTime(): number {
     return this.workingDay.CloseTime;
   }
