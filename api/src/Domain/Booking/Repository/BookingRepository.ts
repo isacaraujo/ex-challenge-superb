@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import {
     IMongooseConnection
 } from '../../../Core/Database/Driver/Mongoose/Connection/IMongooseConnection';
@@ -33,6 +35,19 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
     }
   }
 
+  public async update(booking: Booking): Promise<void> {
+    const record = BookingRecordFactory.createRecord(booking);
+    const conditions = { _id: booking.Id };
+
+    console.log('update booking', record, conditions);
+
+    try {
+      await this.documentModel.update(conditions, { $set: record });
+    } catch (error) {
+      throw new SaveRecordError(`SaveRecordError: ${error.message}`, error);
+    }
+  }
+
   public async findAllBookingsByDate(date: string): Promise<Booking[]> {
     try {
       const collection = await this.documentModel.find({
@@ -56,7 +71,7 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
       throw new FindRecordError('Find booking by id failed', error);
     }
 
-    if (undefined === record) {
+    if (_.isEmpty(record)) {
       throw new RecordNotFoundError('Booking not found');
     }
 
