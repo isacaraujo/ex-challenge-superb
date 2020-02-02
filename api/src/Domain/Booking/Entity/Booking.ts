@@ -71,6 +71,10 @@ class Booking {
     return this.date;
   }
 
+  public set Date(date: string) {
+    this.date = date;
+  }
+
   public get Time(): number {
     return this.time;
   }
