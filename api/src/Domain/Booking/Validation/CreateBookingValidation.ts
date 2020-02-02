@@ -18,7 +18,7 @@ class CreateBookingValidation implements ICreateBookingValidation {
      * I will study about it
      */
     const schema = Joi.object({
-      date: Joi.date().iso().min(moment().format('YYYY-MM-DD')).required(),
+      date: Joi.date().iso().min(moment().format('YYYY-MM-DD')).required().raw(),
       time: Joi.number().integer().min(0).max(23).required(),
       guestName: Joi.string()
           .required(),
