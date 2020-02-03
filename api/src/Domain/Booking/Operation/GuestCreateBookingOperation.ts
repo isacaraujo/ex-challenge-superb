@@ -26,7 +26,9 @@ class GuestCreateBookingOperation implements IGuestCreateBookingOperation {
     }
 
     if (bookingTime < restaurant.OpenTime || bookingTime > restaurant.CloseTime - Booking.DURATION_IN_HOURS) {
-      throw new BookingOutOfTimeRangeError(command.Time, restaurant.OpenTime, restaurant.RealCloseTime);
+      const lastScheduleTime = restaurant.RealCloseTime - Booking.DURATION_IN_HOURS;
+
+      throw new BookingOutOfTimeRangeError(command.Time, restaurant.OpenTime, lastScheduleTime);
     }
 
     const booking = Booking.newBooking(

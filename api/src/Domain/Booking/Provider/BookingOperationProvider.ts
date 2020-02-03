@@ -13,6 +13,8 @@ import { ListBookingOperation } from '../Operation/ListBookingOperation';
 import { UpdateBookingOperation } from '../Operation/UpdateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
+import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
+import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -23,6 +25,7 @@ class BookingOperationProvider implements IProvider {
     this.registerListBookingOperation();
     this.registerGetBookingOperation();
     this.registerUpdateBookingOperation();
+    this.registerGetBookingStatsOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -98,6 +101,20 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new UpdateBookingOperation(repository, logger);
+      });
+  }
+
+  private registerGetBookingStatsOperation(): void {
+    this.container.register(
+      IGetBookingStatsOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingStatsRepository>(IBookingStatsRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new GetBookingStatsOperation(repository, logger);
       });
   }
 }
