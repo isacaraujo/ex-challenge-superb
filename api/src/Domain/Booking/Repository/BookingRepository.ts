@@ -64,7 +64,12 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
     let record: IBookingModel;
 
     try {
-      record = await this.documentModel.findById(id);
+      record = await this.documentModel.findOne({
+        _id: id,
+        status: {
+          $ne: BookingStatus.CANCELED,
+        }
+      });
     } catch (error) {
       throw new FindRecordError('Find booking by id failed', error);
     }
