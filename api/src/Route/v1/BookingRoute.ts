@@ -9,6 +9,9 @@ import {
 } from '../../Domain/Booking/Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../../Domain/Booking/Controller/IListBookingController';
 import { IUpdateBookingController } from '../../Domain/Booking/Controller/IUpdateBookingController';
+import {
+    IUpdateBookingDateController
+} from '../../Domain/Booking/Controller/IUpdateBookingDateController';
 import { Api } from './Api';
 
 class BookingRoute extends Api {
@@ -19,6 +22,7 @@ class BookingRoute extends Api {
     await this.registerListBookingsRoute();
     await this.registerGetBookingRoute();
     await this.registerUpdateBookingRoute();
+    await this.registerUpdateBookingDateRoute();
   }
 
   private async registerGuestCreateBookingRoute(): Promise<void> {
@@ -28,6 +32,17 @@ class BookingRoute extends Api {
       controller,
       methods: HttpRequestMethod.POST,
       path: '/bookings',
+      version: BookingRoute.VERSION,
+    });
+  }
+
+  private async registerGetBookingStatsRoute(): Promise<void> {
+    const controller = await this.getController(IGetBookingStatsController);
+
+    this.addHttpRoute({
+      controller,
+      methods: HttpRequestMethod.GET,
+      path: '/bookings/stats',
       version: BookingRoute.VERSION,
     });
   }
@@ -76,13 +91,13 @@ class BookingRoute extends Api {
     });
   }
 
-  private async registerGetBookingStatsRoute(): Promise<void> {
-    const controller = await this.getController(IGetBookingStatsController);
+  private async registerUpdateBookingDateRoute(): Promise<void> {
+    const controller = await this.getController(IUpdateBookingDateController);
 
     this.addHttpRoute({
       controller,
-      methods: HttpRequestMethod.GET,
-      path: '/bookings/stats',
+      methods: HttpRequestMethod.PUT,
+      path: '/bookings/:id/date',
       version: BookingRoute.VERSION,
     });
   }

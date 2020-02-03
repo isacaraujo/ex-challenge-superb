@@ -3,18 +3,20 @@ import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
 import { GetBookingOperation } from '../Operation/GetBookingOperation';
+import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
 import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
+import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { IUpdateBookingDateOperation } from '../Operation/IUpdateBookingDateOperation';
 import { IUpdateBookingOperation } from '../Operation/IUpdateBookingOperation';
 import { ListBookingOperation } from '../Operation/ListBookingOperation';
+import { UpdateBookingDateOperation } from '../Operation/UpdateBookingDateOperation';
 import { UpdateBookingOperation } from '../Operation/UpdateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
-import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
-import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -26,6 +28,7 @@ class BookingOperationProvider implements IProvider {
     this.registerGetBookingOperation();
     this.registerUpdateBookingOperation();
     this.registerGetBookingStatsOperation();
+    this.registerUpdateBookingDateOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -115,6 +118,23 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new GetBookingStatsOperation(repository, logger);
+      });
+  }
+
+  private registerUpdateBookingDateOperation(): void {
+    this.container.register(
+      IUpdateBookingDateOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const statsRepository = await this.container
+          .get<IBookingStatsRepository>(IBookingStatsRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new UpdateBookingDateOperation(repository, statsRepository, logger);
       });
   }
 }

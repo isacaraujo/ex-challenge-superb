@@ -13,17 +13,21 @@ import { IGetBookingStatsController } from '../Controller/IGetBookingStatsContro
 import { IGuestCreateBookingController } from '../Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../Controller/IListBookingController';
 import { IUpdateBookingController } from '../Controller/IUpdateBookingController';
+import { IUpdateBookingDateController } from '../Controller/IUpdateBookingDateController';
 import { ListBookingController } from '../Controller/ListBookingController';
 import { UpdateBookingController } from '../Controller/UpdateBookingController';
+import { UpdateBookingDateController } from '../Controller/UpdateBookingDateController';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
+import { IUpdateBookingDateOperation } from '../Operation/IUpdateBookingDateOperation';
 import { IUpdateBookingOperation } from '../Operation/IUpdateBookingOperation';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
 import { IGetBookingStatsValidation } from '../Validation/IGetBookingStatsValidation';
 import { IListBookingValidation } from '../Validation/IListBookingValidation';
+import { IUpdateBookingDateValidation } from '../Validation/IUpdateBookingDateValidation';
 import { IUpdateBookingValidation } from '../Validation/IUpdateBookingValidation';
 
 class BookingControllerProvider implements IProvider {
@@ -36,6 +40,7 @@ class BookingControllerProvider implements IProvider {
     this.registerGetBookingController();
     this.registerUpdateBookingController();
     this.registerGetBookingStatsController();
+    this.registerUpdateBookingDateController();
   }
 
   private registerGuestCreateBookingController(): void {
@@ -144,6 +149,31 @@ class BookingControllerProvider implements IProvider {
           validation,
           findRestaurant,
           getStats
+        );
+      });
+  }
+
+  private registerUpdateBookingDateController(): void {
+    this.container.register(
+      IUpdateBookingDateController,
+      async () => {
+        const validation = await this.container
+          .get<IUpdateBookingDateValidation>(IUpdateBookingDateValidation);
+
+        const findRestaurant = await this.container
+          .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
+
+        const getBooking = await this.container
+          .get<IGetBookingOperation>(IGetBookingOperation);
+
+        const updateBookingDate = await this.container
+          .get<IUpdateBookingDateOperation>(IUpdateBookingDateOperation);
+
+        return new UpdateBookingDateController(
+          validation,
+          findRestaurant,
+          getBooking,
+          updateBookingDate
         );
       });
   }
