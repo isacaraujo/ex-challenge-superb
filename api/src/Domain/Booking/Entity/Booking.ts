@@ -140,13 +140,17 @@ class Booking {
   }
 
   public confirm(): void {
-    this.confirmatedAt = new Date();
+    const now = new Date();
+    this.confirmatedAt = now;
     this.status = BookingStatus.CONFIRMED;
+    this.updatedAt = now;
   }
 
   public cancel(): void {
-    this.canceledAt = new Date();
+    const now = new Date();
+    this.canceledAt = now;
     this.status = BookingStatus.CANCELED;
+    this.updatedAt = now;
   }
 
   public setId(id: string): void {

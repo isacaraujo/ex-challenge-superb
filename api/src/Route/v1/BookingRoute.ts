@@ -1,4 +1,5 @@
 import { HttpRequestMethod } from '../../Core/Http/Type/HttpRequestMethod';
+import { ICancelBookingController } from '../../Domain/Booking/Controller/ICancelBookingController';
 import { ICreateBookingController } from '../../Domain/Booking/Controller/ICreateBookingController';
 import { IGetBookingController } from '../../Domain/Booking/Controller/IGetBookingController';
 import {
@@ -23,6 +24,7 @@ class BookingRoute extends Api {
     await this.registerGetBookingRoute();
     await this.registerUpdateBookingRoute();
     await this.registerUpdateBookingDateRoute();
+    await this.registerCancelBookingRoute();
   }
 
   private async registerGuestCreateBookingRoute(): Promise<void> {
@@ -98,6 +100,17 @@ class BookingRoute extends Api {
       controller,
       methods: HttpRequestMethod.PUT,
       path: '/bookings/:id/date',
+      version: BookingRoute.VERSION,
+    });
+  }
+
+  private async registerCancelBookingRoute(): Promise<void> {
+    const controller = await this.getController(ICancelBookingController);
+
+    this.addHttpRoute({
+      controller,
+      methods: HttpRequestMethod.DELETE,
+      path: '/bookings/:id',
       version: BookingRoute.VERSION,
     });
   }
