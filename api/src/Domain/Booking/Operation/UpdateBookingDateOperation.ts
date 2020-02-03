@@ -10,7 +10,6 @@ import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError'
 import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
 import { UpdateBookingGenericError } from '../Error/Operation/UpdateBookingGenericError';
 import { ILogger } from '../../../Core/Logger/ILogger';
-import { BookingCanceledError } from '../Error/Operation/BookingCanceledError';
 
 class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
   public constructor(
@@ -24,10 +23,6 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     const restaurant = command.Restaurant;
     const date = command.Date;
     let bookingTime = command.Time;
-
-    if (booking.IsCanceled) {
-      throw new BookingCanceledError();
-    }
 
     if (restaurant.IsCloseInNextDay && bookingTime < restaurant.OpenTime) {
       bookingTime += Restaurant.DAY_IN_HOURS;

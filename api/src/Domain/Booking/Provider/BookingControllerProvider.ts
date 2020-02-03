@@ -3,10 +3,12 @@ import { IProvider } from '../../../Core/Provider/IProvider';
 import {
     IFindCurrentRestaurantOperation
 } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
+import { CancelBookingController } from '../Controller/CancelBookingController';
 import { CreateBookingController } from '../Controller/CreateBookingController';
 import { GetBookingController } from '../Controller/GetBookingController';
 import { GetBookingStatsController } from '../Controller/GetBookingStatsController';
 import { GuestCreateBookingController } from '../Controller/GuestCreateBookingController';
+import { ICancelBookingController } from '../Controller/ICancelBookingController';
 import { ICreateBookingController } from '../Controller/ICreateBookingController';
 import { IGetBookingController } from '../Controller/IGetBookingController';
 import { IGetBookingStatsController } from '../Controller/IGetBookingStatsController';
@@ -17,6 +19,7 @@ import { IUpdateBookingDateController } from '../Controller/IUpdateBookingDateCo
 import { ListBookingController } from '../Controller/ListBookingController';
 import { UpdateBookingController } from '../Controller/UpdateBookingController';
 import { UpdateBookingDateController } from '../Controller/UpdateBookingDateController';
+import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
@@ -41,6 +44,7 @@ class BookingControllerProvider implements IProvider {
     this.registerUpdateBookingController();
     this.registerGetBookingStatsController();
     this.registerUpdateBookingDateController();
+    this.registerCancelBookingController();
   }
 
   private registerGuestCreateBookingController(): void {
@@ -174,6 +178,23 @@ class BookingControllerProvider implements IProvider {
           findRestaurant,
           getBooking,
           updateBookingDate
+        );
+      });
+  }
+
+  private registerCancelBookingController(): void {
+    this.container.register(
+      ICancelBookingController,
+      async () => {
+        const getBooking = await this.container
+          .get<IGetBookingOperation>(IGetBookingOperation);
+
+        const cancelBooking = await this.container
+          .get<ICancelBookingOperation>(ICancelBookingOperation);
+
+        return new CancelBookingController(
+          getBooking,
+          cancelBooking
         );
       });
   }

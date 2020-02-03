@@ -39,10 +39,8 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
     const record = BookingRecordFactory.createRecord(booking);
     const conditions = { _id: booking.Id };
 
-    console.log('update booking', record, conditions);
-
     try {
-      await this.documentModel.update(conditions, { $set: record });
+      await this.documentModel.updateOne(conditions, { $set: record });
     } catch (error) {
       throw new SaveRecordError(`SaveRecordError: ${error.message}`, error);
     }
@@ -66,7 +64,12 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
     let record: IBookingModel;
 
     try {
-      record = await this.documentModel.findById(id);
+      record = await this.documentModel.findOne({
+        _id: id,
+        status: {
+          $ne: BookingStatus.CANCELED,
+        }
+      });
     } catch (error) {
       throw new FindRecordError('Find booking by id failed', error);
     }
