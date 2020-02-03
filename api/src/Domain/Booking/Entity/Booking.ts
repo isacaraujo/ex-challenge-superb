@@ -131,6 +131,14 @@ class Booking {
     this.status = status;
   }
 
+  public get IsCanceled(): boolean {
+    return this.status === BookingStatus.CANCELED;
+  }
+
+  public get IsConfirmed(): boolean {
+    return this.status === BookingStatus.CONFIRMED;
+  }
+
   public confirm(): void {
     this.confirmatedAt = new Date();
     this.status = BookingStatus.CONFIRMED;
@@ -149,6 +157,12 @@ class Booking {
     this.guest.Name = guestName;
     this.guest.Email = guestEmail;
     this.totalGuests = totalGuests;
+    this.updatedAt = new Date();
+  }
+
+  public updateDateTime(date: string, time: number): void {
+    this.date = date;
+    this.time = time;
     this.updatedAt = new Date();
   }
 

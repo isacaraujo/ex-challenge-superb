@@ -5,8 +5,10 @@ import { GetBookingStatsValidation } from '../Validation/GetBookingStatsValidati
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
 import { IGetBookingStatsValidation } from '../Validation/IGetBookingStatsValidation';
 import { IListBookingValidation } from '../Validation/IListBookingValidation';
+import { IUpdateBookingDateValidation } from '../Validation/IUpdateBookingDateValidation';
 import { IUpdateBookingValidation } from '../Validation/IUpdateBookingValidation';
 import { ListBookingValidation } from '../Validation/ListBookingValidation';
+import { UpdateBookingDateValidation } from '../Validation/UpdateBookingDateValidation';
 import { UpdateBookingValidation } from '../Validation/UpdateBookingValidation';
 
 class BookingValidationProvider implements IProvider {
@@ -17,6 +19,7 @@ class BookingValidationProvider implements IProvider {
     this.registerListBookingValidation();
     this.registerUpdateBookingValidation();
     this.registerGetBookingStatsValidation();
+    this.registerUpdateBookingDateValidation();
   }
 
   private registerCreateBookingValidation(): void {
@@ -44,6 +47,13 @@ class BookingValidationProvider implements IProvider {
     this.container.register(
       IGetBookingStatsValidation,
       async () => Promise.resolve(new GetBookingStatsValidation())
+    );
+  }
+
+  private registerUpdateBookingDateValidation(): void {
+    this.container.register(
+      IUpdateBookingDateValidation,
+      async () => Promise.resolve(new UpdateBookingDateValidation())
     );
   }
 }
