@@ -2,15 +2,19 @@ import { HttpRequestMethod } from '../../Core/Http/Type/HttpRequestMethod';
 import { ICreateBookingController } from '../../Domain/Booking/Controller/ICreateBookingController';
 import { IGetBookingController } from '../../Domain/Booking/Controller/IGetBookingController';
 import {
+    IGetBookingStatsController
+} from '../../Domain/Booking/Controller/IGetBookingStatsController';
+import {
     IGuestCreateBookingController
 } from '../../Domain/Booking/Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../../Domain/Booking/Controller/IListBookingController';
-import { Api } from './Api';
 import { IUpdateBookingController } from '../../Domain/Booking/Controller/IUpdateBookingController';
+import { Api } from './Api';
 
 class BookingRoute extends Api {
   public async register(): Promise<void> {
     await this.registerGuestCreateBookingRoute();
+    await this.registerGetBookingStatsRoute();
     await this.registerCreateBookingRoute();
     await this.registerListBookingsRoute();
     await this.registerGetBookingRoute();
@@ -68,6 +72,17 @@ class BookingRoute extends Api {
       controller,
       methods: HttpRequestMethod.PUT,
       path: '/bookings/:id',
+      version: BookingRoute.VERSION,
+    });
+  }
+
+  private async registerGetBookingStatsRoute(): Promise<void> {
+    const controller = await this.getController(IGetBookingStatsController);
+
+    this.addHttpRoute({
+      controller,
+      methods: HttpRequestMethod.GET,
+      path: '/bookings/stats',
       version: BookingRoute.VERSION,
     });
   }

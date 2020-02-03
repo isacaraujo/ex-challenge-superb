@@ -1,7 +1,9 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { CreateBookingValidation } from '../Validation/CreateBookingValidation';
+import { GetBookingStatsValidation } from '../Validation/GetBookingStatsValidation';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
+import { IGetBookingStatsValidation } from '../Validation/IGetBookingStatsValidation';
 import { IListBookingValidation } from '../Validation/IListBookingValidation';
 import { IUpdateBookingValidation } from '../Validation/IUpdateBookingValidation';
 import { ListBookingValidation } from '../Validation/ListBookingValidation';
@@ -14,6 +16,7 @@ class BookingValidationProvider implements IProvider {
     this.registerCreateBookingValidation();
     this.registerListBookingValidation();
     this.registerUpdateBookingValidation();
+    this.registerGetBookingStatsValidation();
   }
 
   private registerCreateBookingValidation(): void {
@@ -34,6 +37,13 @@ class BookingValidationProvider implements IProvider {
     this.container.register(
       IUpdateBookingValidation,
       async () => Promise.resolve(new UpdateBookingValidation())
+    );
+  }
+
+  private registerGetBookingStatsValidation(): void {
+    this.container.register(
+      IGetBookingStatsValidation,
+      async () => Promise.resolve(new GetBookingStatsValidation())
     );
   }
 }

@@ -38,6 +38,16 @@ class BookingStats {
   public set TotalScheduled(totalScheduled: number) {
     this.totalScheduled = totalScheduled;
   }
+
+  public static createEmpty(date: string, time: number): BookingStats {
+    const stats = new BookingStats();
+    stats.Date = date;
+    stats.Time = time;
+    stats.TotalConfirmed = 0;
+    stats.TotalScheduled = 0;
+
+    return stats;
+  }
 }
 
 export { BookingStats };
