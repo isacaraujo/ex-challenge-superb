@@ -1,49 +1,77 @@
+import moment, { Moment } from 'moment';
+import * as _ from 'lodash';
+
 import { BookingStatus } from '../Type/Enum/BookingStatus';
 import { Guest } from './Guest';
 
 class Booking {
-  private guid?: string;
+  private id?: string;
 
   private status?: BookingStatus;
 
-  public constructor(
-    private guest: Guest,
-    private totalGuests: number,
-    private date: string,
-    private time: string
-  ) {}
+  private guest?: Guest;
 
-  public get Guid(): string | undefined {
-    return this.guid;
+  private totalGuests?: number;
+
+  private date?: string;
+
+  private time?: number;
+
+  public get Id(): string | undefined {
+    return this.id;
+  }
+
+  public set Id(id: string | undefined) {
+    this.id = id;
   }
 
   public get Status(): BookingStatus | undefined {
     return this.status;
   }
 
-  public get Guest(): Guest {
-    return this.guest;
-  }
-
-  public get TotalGuests(): number {
-    return this.totalGuests;
-  }
-
-  public get Date(): string {
-    return this.date;
-  }
-
-  public get Time(): string {
-    return this.time;
-  }
-
-  public UpdateGuidStatus(guid: string, status: BookingStatus): void {
-    this.guid = guid;
+  public set Status(status: BookingStatus | undefined) {
     this.status = status;
   }
 
-  public IsBooked(): boolean {
-    return this.guid !== undefined;
+  public get Guest(): Guest | undefined {
+    return this.guest;
+  }
+
+  public set Guest(guest: Guest | undefined) {
+    this.guest = guest;
+  }
+
+  public get TotalGuests(): number | undefined {
+    return this.totalGuests;
+  }
+
+  public set TotalGuests(totalGuests: number | undefined) {
+    this.totalGuests = totalGuests;
+  }
+
+  public get Date(): string | undefined {
+    return this.date;
+  }
+
+  public set Date(date: string | undefined) {
+    this.date = date;
+  }
+
+  public get Time(): number | undefined {
+    return this.time;
+  }
+
+  public set Time(time: number | undefined) {
+    this.time = time;
+  }
+
+  public get IsScheduled(): boolean {
+    return this.status === BookingStatus.SCHEDULED;
+  }
+
+  public get ReservationDate(): Moment {
+    const formatHour = _.padStart(String(this.time), 2, '0');
+    return moment(`${this.date} ${formatHour}`, 'YYYY-MM-DD HH');
   }
 }
 
