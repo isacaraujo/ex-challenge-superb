@@ -4,30 +4,47 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+
 import { ContainerFactory } from './Core/Container/Factory/ContainerFactory';
 import { IContainerService } from './Core/Container/IContainerService';
 import { ServiceRegistry } from './Core/Registry/ServiceRegistry';
-import { Home } from './Route/Home';
-import { NewReservation } from './Route/NewReservation';
+import NewBookingView from './View/Guest/Booking/NewBookingView';
+import LoginView from './View/Backoffice/Login/LoginView';
+import DashboardView from './View/Backoffice/Dashboard/DashboardView';
+import { IApplicationConfiguration } from './Config/IApplicationConfiguration';
+import { ApplicationConfiguration } from './Config/ApplicationConfiguration';
 
 (async function () {
   const container: IContainerService = ContainerFactory.createInversify();
+
+  container.register(
+    IApplicationConfiguration,
+    async () => Promise.resolve(new ApplicationConfiguration()));
 
   const serviceRegistry = new ServiceRegistry(container);
 
   await serviceRegistry.registerAll();
 
   ReactDOM.render(
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route exact path="/reservations/new">
-          <NewReservation container={ container } />
-        </Route>
-      </Switch>
-    </BrowserRouter>,
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/">
+            <NewBookingView container={container} />
+          </Route>
+
+          <Route exact path="/backoffice/login">
+            <LoginView />
+          </Route>
+
+          <Route exact path="/backoffice">
+            <DashboardView />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </MuiPickersUtilsProvider>,
     document.getElementById('root')
   );
 }());

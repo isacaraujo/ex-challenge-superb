@@ -13,6 +13,8 @@ class JoiSchemaValidator<T> implements ISchemaValidator<T> {
     });
 
     if (result.error !== undefined) {
+      console.error(result.error);
+
       throw new ConstraintViolatedError('Schema is invalid', result.error.details);
     }
 

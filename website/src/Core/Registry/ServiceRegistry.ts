@@ -1,5 +1,4 @@
 import { BookingRepositoryProvider } from '../../Domain/Booking/Provider/BookingRepositoryProvider';
-import { BookingServiceProvider } from '../../Domain/Booking/Provider/BookingServiceProvider';
 import {
     RestaurantRepositoryProvider
 } from '../../Domain/Restaurant/Provider/RestaurantRepositoryProvider';
@@ -16,7 +15,6 @@ class ServiceRegistry implements IServiceRegistry {
     RestaurantRepositoryProvider,
     RestaurantServiceProvider,
     BookingRepositoryProvider,
-    BookingServiceProvider,
   ];
 
   private readonly container: IContainerService;
