@@ -14,6 +14,8 @@ class RestaurantRepository implements IRestaurantRepository {
 
   private static readonly SET_TIME_RANGE = '/v1/restaurants/current/timerange';
 
+  private static readonly ADD_TABLE = '/v1/restaurants/current/tables';
+
   public constructor(private readonly httpClient: IHttpClient) {}
 
   public async findCurrent(): Promise<Restaurant> {
@@ -38,6 +40,17 @@ class RestaurantRepository implements IRestaurantRepository {
     try {
       await this.httpClient
         .put<any>(RestaurantRepository.SET_TIME_RANGE, payload);
+    } catch (error) {
+      const repositoryError = this.getSpecificErrorBasedOn(error);
+
+      throw repositoryError;
+    }
+  }
+
+  public async addTable(): Promise<void> {
+    try {
+      await this.httpClient
+        .post<any>(RestaurantRepository.ADD_TABLE);
     } catch (error) {
       const repositoryError = this.getSpecificErrorBasedOn(error);
 

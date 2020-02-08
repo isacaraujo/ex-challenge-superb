@@ -3,7 +3,7 @@ interface IRestaurantEditState {
   closeTime: string;
   tablesCount: number;
   times: number[];
-  modalLoadingOpen: boolean;
+  modalAddTableOpen: boolean;
 }
 
 const IRestaurantEditState = Symbol.for('IRestaurantEditState');
