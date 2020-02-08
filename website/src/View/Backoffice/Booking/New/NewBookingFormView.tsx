@@ -10,16 +10,16 @@ import {
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import { IBookingRepository } from '../../../Domain/Booking/Repository/IBookingRepository';
-import { IBookingFormProps } from './IBookingFormProps';
-import { IBookingFormState } from './IBookingFormState';
-import { BookingFormStyles } from './Styles/BookingFormStyles';
-import { CreateBookingCommand } from '../../../Domain/Booking/Type/Command/CreateBookingCommand';
+import { IBookingRepository } from '../../../../Domain/Booking/Repository/IBookingRepository';
+import { CreateBookingCommand } from '../../../../Domain/Booking/Type/Command/CreateBookingCommand';
+import { BookingFormStyles } from './BookingFormStyles';
+import { INewBookingFormProps } from './INewBookingFormProps';
+import { INewBookingFormState } from './INewBookingFormState';
 
-class BookingFormView extends React.Component<IBookingFormProps, IBookingFormState> {
+class NewBookingFormView extends React.Component<INewBookingFormProps, INewBookingFormState> {
   private bookingRepository?: IBookingRepository;
 
-  public constructor(props: IBookingFormProps) {
+  public constructor(props: INewBookingFormProps) {
     super(props);
 
     this.state = {
@@ -132,7 +132,7 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
         aria-labelledby="form-dialog-title"
         disableBackdropClick={true}
       >
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="form-dialog-title">New booking</DialogTitle>
         <DialogContent>
         <form
           className={classes.form}
@@ -224,4 +224,4 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
   }
 }
 
-export default withRouter(withStyles(BookingFormStyles)(BookingFormView));
+export default withRouter(withStyles(BookingFormStyles)(NewBookingFormView));

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import moment, { Moment } from 'moment';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link as RouterLink } from 'react-router-dom';
 
 import { UnregisterCallback, Location, History, Action } from 'history';
 
@@ -15,11 +15,11 @@ import EventIcon from '@material-ui/icons/Event';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import { Booking } from '../../../Domain/Booking/Entity/Booking';
-import { IBookingRepository } from '../../../Domain/Booking/Repository/IBookingRepository';
+import { Booking } from '../../../../Domain/Booking/Entity/Booking';
+import { IBookingRepository } from '../../../../Domain/Booking/Repository/IBookingRepository';
 import { IBookingListProps } from './IBookingListProps';
 import { IBookingListState } from './IBookingListState';
-import { BookingListStyles } from './Styles/BookingListStyles';
+import { BookingListStyles } from './BookingListStyles';
 
 class BookingListView extends React.Component<IBookingListProps, IBookingListState> {
   private bookingRepository?: IBookingRepository;
@@ -74,10 +74,6 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
     });
   }
 
-  private handleEditClick(booking: Booking): void {
-    console.log('edit', booking);
-  }
-
   private handleCancelClick(booking: Booking): void {
     console.log('cancel', booking);
   }
@@ -97,7 +93,8 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
   }
 
   public render(): React.ReactNode {
-    const {classes} = this.props;
+    const { classes, match } = this.props;
+    const { path } = match;
 
     return (
       <Paper className={classes.paper}>
@@ -147,7 +144,12 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
                 <TableCell>{booking.Status}</TableCell>
                 <TableCell align="right">
                   <IconButton onClick={() => this.handleEditTimeClick(booking)}><EventIcon fontSize="small" /></IconButton>
-                  <IconButton onClick={() => this.handleEditClick(booking)}><EditIcon fontSize="small" /></IconButton>
+                  <IconButton
+                    component={RouterLink}
+                    to={`${path}/bookings/edit/${booking.Id}`}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
                   <IconButton onClick={() => this.handleCancelClick(booking)}><BlockIcon fontSize="small" /></IconButton>
                 </TableCell>
               </TableRow>

@@ -1,7 +1,7 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { BookingAvailability } from '../../../Domain/Booking/Entity/BookingAvailability';
+import { BookingAvailability } from '../../../../Domain/Booking/Entity/BookingAvailability';
 
-interface IBookingFormState {
+interface INewBookingFormState {
   modalOpen: boolean;
   date: MaterialUiPickersDate;
   time: string;
@@ -11,6 +11,6 @@ interface IBookingFormState {
   times: BookingAvailability[];
 }
 
-const IBookingFormState = Symbol.for('IBookingFormState');
+const INewBookingFormState = Symbol.for('INewBookingFormState');
 
-export { IBookingFormState };
+export { INewBookingFormState };

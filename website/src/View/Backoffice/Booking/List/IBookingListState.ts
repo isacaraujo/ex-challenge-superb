@@ -1,5 +1,5 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { Booking } from '../../../Domain/Booking/Entity/Booking';
+import { Booking } from '../../../../Domain/Booking/Entity/Booking';
 
 interface IBookingListState {
   selectedDate: MaterialUiPickersDate;
