@@ -4,6 +4,7 @@ import { Booking } from '../../../../Domain/Booking/Entity/Booking';
 interface IBookingListState {
   selectedDate: MaterialUiPickersDate;
   bookings: Booking[];
+  bookingForCancel?: Booking;
 }
 
 const IBookingListState = Symbol.for('IBookingListState');
