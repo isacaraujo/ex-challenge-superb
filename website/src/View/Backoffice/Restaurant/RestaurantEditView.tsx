@@ -38,7 +38,8 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
   private handleConfirmAddTable(): void {
     this.setState({
       modalAddTableOpen: false,
-    })
+    });
+
     void this.addTable();
   }
 

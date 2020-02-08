@@ -40,8 +40,8 @@ import RestaurantEditView from './View/Backoffice/Restaurant/RestaurantEditView'
             <LoginView />
           </Route>
 
-          <Route exact path="/backoffice">
-            <DashboardView />
+          <Route path="/backoffice">
+            <DashboardView container={container} />
           </Route>
 
           <Route exact path="/backoffice/restaurant/edit">

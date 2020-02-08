@@ -2,7 +2,7 @@ import { StyleRules, Theme } from '@material-ui/core';
 
 const drawerWidth = 240;
 
-const DashboardStyles = (theme: Theme): StyleRules<any, any> => ({
+const BookingListStyles = (theme: Theme): StyleRules<any, any> => ({
   root: {
     display: 'flex',
   },
@@ -84,10 +84,8 @@ const DashboardStyles = (theme: Theme): StyleRules<any, any> => ({
   },
   selectDatePicker: {
     float: 'right',
-  },
-  buttonAddBooking: {
-    float: 'right',
   }
 });
 
-export { DashboardStyles };
+export { BookingListStyles };
+

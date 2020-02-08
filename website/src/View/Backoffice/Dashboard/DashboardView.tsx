@@ -1,23 +1,14 @@
-import moment from 'moment';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link as RouterLink, Route, Switch, withRouter } from 'react-router-dom';
 
-import { IconButton } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import BlockIcon from '@material-ui/icons/Block';
-import EditIcon from '@material-ui/icons/Edit';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import AddCircle from '@material-ui/icons/AddCircle';
 
+import BookingFormView from '../Booking/BookingFormView';
+import BookingListView from '../Booking/BookingListView';
 import BackofficeLayout from '../Layout/BackofficeLayout';
 import { IDashboardProps } from './IDashboardProps';
 import { IDashboardState } from './IDashboardState';
@@ -27,89 +18,39 @@ class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
   public constructor(props: IDashboardProps) {
     super(props);
 
-    this.state = {
-      selectedDate: moment(),
-      bookings: [],
-    };
-  }
-
-  private handleEditClick(row: any): void {
-    console.log('edit id', row);
-  }
-
-  private handleCancelClick(row: any): void {
-    console.log('cancel id', row);
-  }
-
-  private handleDateChange(date: MaterialUiPickersDate): void {
-    this.setState({
-      selectedDate: date,
-    });
+    this.state = {};
   }
 
   public render(): React.ReactNode {
-    const {classes} = this.props;
+    const { classes, match } = this.props;
+
+    const { path } = match;
 
     return (
       <BackofficeLayout>
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Grid container spacing={3}>
-                  <Grid item xs={6}>
-                    <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                      Bookings
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <KeyboardDatePicker
-                      autoOk
-                      variant="inline"
-                      inputVariant="outlined"
-                      format="MM/DD/YYYY"
-                      margin="none"
-                      id="date-picker-inline"
-                      value={this.state.selectedDate}
-                      InputAdornmentProps={{ position: "start" }}
-                      onChange={(date) => this.handleDateChange(date)}
-                      className={classes.selectDatePicker}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Time</TableCell>
-                      <TableCell>Guests</TableCell>
-                      <TableCell align="right">Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.bookings.map((booking, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{booking.Name}</TableCell>
-                        <TableCell>{booking.Email}</TableCell>
-                        <TableCell>{booking.Date}</TableCell>
-                        <TableCell>{booking.Time}</TableCell>
-                        <TableCell>{booking.TotalGuests}</TableCell>
-                        <TableCell align="right">
-                          <IconButton onClick={() => this.handleEditClick(booking)}><EditIcon fontSize="small" /></IconButton>
-                          <IconButton onClick={() => this.handleCancelClick(booking)}><BlockIcon fontSize="small" /></IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
+            <Button
+              component={RouterLink}
+              to={`${path}/bookings/new`}
+              color="primary"
+              variant="contained"
+              startIcon={<AddCircle />}
+              className={classes.buttonAddBooking}>
+                Booking
+            </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <BookingListView />
             </Grid>
           </Grid>
         </Container>
+        <Switch>
+          <Route path={`${path}/bookings/new`}>
+            <BookingFormView container={this.props.container} />
+          </Route>
+        </Switch>
       </BackofficeLayout>
     );
   }
