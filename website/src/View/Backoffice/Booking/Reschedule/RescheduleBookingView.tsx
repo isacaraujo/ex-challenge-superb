@@ -5,30 +5,34 @@ import { withRouter } from 'react-router-dom';
 
 import {
     Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Grid,
-    InputLabel, MenuItem, Select, TextField, withStyles
+    InputLabel, MenuItem, Select, withStyles
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import { IBookingRepository } from '../../../Domain/Booking/Repository/IBookingRepository';
-import { IBookingFormProps } from './IBookingFormProps';
-import { IBookingFormState } from './IBookingFormState';
-import { BookingFormStyles } from './Styles/BookingFormStyles';
-import { CreateBookingCommand } from '../../../Domain/Booking/Type/Command/CreateBookingCommand';
+import {
+    RecordNotFoundError
+} from '../../../../Domain/Booking/Error/Repository/RecordNotFoundError';
+import { IBookingRepository } from '../../../../Domain/Booking/Repository/IBookingRepository';
+import {
+    UpdateTimeBookingCommand
+} from '../../../../Domain/Booking/Type/Command/UpdateTimeBookingCommand';
+import { RescheduleBookingStyles } from './RescheduleBookingStyles';
+import { IRescheduleBookingProps } from './IRescheduleBookingProps';
+import { IRescheduleBookingState } from './IRescheduleBookingState';
 
-class BookingFormView extends React.Component<IBookingFormProps, IBookingFormState> {
+class RescheduleBookingView extends React.Component<IRescheduleBookingProps, IRescheduleBookingState> {
   private bookingRepository?: IBookingRepository;
 
-  public constructor(props: IBookingFormProps) {
+  public constructor(props: IRescheduleBookingProps) {
     super(props);
 
     this.state = {
       modalOpen: true,
+      bookingNotFoundError: false,
+      booking: undefined,
       date: null,
       time: '',
-      name: '',
-      email: '',
-      totalGuests: '',
       times: [],
     };
   }
@@ -46,19 +50,28 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
     });
 
     void this.getAvailabilitiesByDate(now);
+
+    const { bookingId } = this.props.match.params;
+
+    void this.getBookingById(bookingId);
   }
 
   private async handleSaveClick(): Promise<void> {
-    const command = CreateBookingCommand.create(
-      this.state.name,
-      this.state.email,
-      this.state.totalGuests,
+    const booking = this.state.booking;
+
+    if (undefined === booking) {
+      console.log('unable to save while booking is not loaded');
+
+      return;
+    }
+    const command = UpdateTimeBookingCommand.create(
+      booking,
       this.state.date as Moment,
       this.state.time
     );
 
     try {
-      await this.bookingRepository!.create(command);
+      await this.bookingRepository!.updateTime(command);
 
       this.handleClose();
     } catch (error) {
@@ -84,24 +97,6 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
     });
   }
 
-  private handleName(e: React.ChangeEvent<any>): void {
-    this.setState({
-      name: e.target.value,
-    });
-  }
-
-  private handleEmail(e: React.ChangeEvent<any>): void {
-    this.setState({
-      email: e.target.value,
-    });
-  }
-
-  private handleTotalGuests(e: React.ChangeEvent<any>): void {
-    this.setState({
-      totalGuests: e.target.value,
-    });
-  }
-
   private handleClose(): void {
     this.props.history.push('/backoffice');
   }
@@ -122,6 +117,28 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
     }
   }
 
+  private async getBookingById(bookingId: string): Promise<void> {
+    try {
+      const booking = await this.bookingRepository!.findById(bookingId);
+
+      this.setState({
+        booking,
+        date: booking.Date ? moment(booking.Date, 'YYYY-MM-DD') : null,
+        time: booking.Time ? String(booking.Time) : '',
+      });
+    } catch (error) {
+      if (error instanceof RecordNotFoundError) {
+        this.setState({
+          bookingNotFoundError: true,
+        });
+
+        return;
+      }
+
+      console.error(error);
+    }
+  }
+
   public render(): React.ReactNode {
     const { classes } = this.props;
 
@@ -132,7 +149,7 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
         aria-labelledby="form-dialog-title"
         disableBackdropClick={true}
       >
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="form-dialog-title">New booking</DialogTitle>
         <DialogContent>
         <form
           className={classes.form}
@@ -168,46 +185,6 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
             </Grid>
 
             <Divider />
-
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="guestName"
-                id="guestName"
-                label="Name"
-                autoFocus
-                value={this.state.name}
-                onChange={(e) => this.handleName(e)}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="guestEmail"
-                id="guestEmail"
-                label="Email Address"
-                value={this.state.email}
-                onChange={(e) => this.handleEmail(e)}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                type="number"
-                variant="outlined"
-                required
-                fullWidth
-                id="totalGuests"
-                label="How many people?"
-                name="totalGuests"
-                value={this.state.totalGuests}
-                onChange={(e) => this.handleTotalGuests(e)} />
-            </Grid>
           </Grid>
         </form>
         </DialogContent>
@@ -224,4 +201,4 @@ class BookingFormView extends React.Component<IBookingFormProps, IBookingFormSta
   }
 }
 
-export default withRouter(withStyles(BookingFormStyles)(BookingFormView));
+export default withRouter(withStyles(RescheduleBookingStyles)(RescheduleBookingView));

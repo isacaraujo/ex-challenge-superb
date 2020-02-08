@@ -7,12 +7,14 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import AddCircle from '@material-ui/icons/AddCircle';
 
-import BookingFormView from '../Booking/BookingFormView';
-import BookingListView from '../Booking/BookingListView';
+import BookingListView from '../Booking/List/BookingListView';
+import NewBookingFormView from '../Booking/New/NewBookingFormView';
 import BackofficeLayout from '../Layout/BackofficeLayout';
 import { IDashboardProps } from './IDashboardProps';
 import { IDashboardState } from './IDashboardState';
 import { DashboardStyles } from './Styles/DashboardStyles';
+import EditBookingView from '../Booking/Edit/EditBookingView';
+import RescheduleBookingView from '../Booking/Reschedule/RescheduleBookingView';
 
 class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
   public constructor(props: IDashboardProps) {
@@ -48,7 +50,19 @@ class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
         </Container>
         <Switch>
           <Route path={`${path}/bookings/new`}>
-            <BookingFormView
+            <NewBookingFormView
+              container={this.props.container}
+            />
+          </Route>
+
+          <Route path={`${path}/bookings/edit/:bookingId`}>
+            <EditBookingView
+              container={this.props.container}
+            />
+          </Route>
+
+          <Route path={`${path}/bookings/reschedule/:bookingId`}>
+            <RescheduleBookingView
               container={this.props.container}
             />
           </Route>

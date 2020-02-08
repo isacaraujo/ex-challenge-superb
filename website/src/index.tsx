@@ -40,12 +40,12 @@ import RestaurantEditView from './View/Backoffice/Restaurant/RestaurantEditView'
             <LoginView />
           </Route>
 
-          <Route path="/backoffice">
-            <DashboardView container={container} />
-          </Route>
-
           <Route exact path="/backoffice/restaurant/edit">
             <RestaurantEditView container={container} />
+          </Route>
+
+          <Route path="/backoffice">
+            <DashboardView container={container} />
           </Route>
         </Switch>
       </BrowserRouter>
