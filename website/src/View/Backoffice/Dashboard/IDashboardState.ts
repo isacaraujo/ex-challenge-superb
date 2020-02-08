@@ -1,9 +1,4 @@
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-
-interface IDashboardState {
-  selectedDate: MaterialUiPickersDate;
-  bookings: any[];
-}
+interface IDashboardState {}
 
 const IDashboardState = Symbol.for('IDashboardState');
 const IBookingEntry = Symbol.for('IBookingEntry');

@@ -5,7 +5,10 @@ import { CreateBookingCommand } from '../Type/Command/CreateBookingCommand';
 
 interface IBookingRepository {
   create(command: CreateBookingCommand): Promise<Booking>;
+
   getAvailabilityByDate(date: Moment): Promise<BookingAvailability[]>;
+
+  findAllByDate(date: Moment): Promise<Booking[]>;
 }
 
 const IBookingRepository = Symbol.for('IBookingRepository');

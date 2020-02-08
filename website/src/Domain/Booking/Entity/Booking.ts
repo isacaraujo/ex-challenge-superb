@@ -41,6 +41,14 @@ class Booking {
     this.guest = guest;
   }
 
+  public get GuestName(): string | undefined {
+    return this.guest?.Name;
+  }
+
+  public get GuestEmail(): string | undefined {
+    return this.guest?.Email;
+  }
+
   public get TotalGuests(): number | undefined {
     return this.totalGuests;
   }

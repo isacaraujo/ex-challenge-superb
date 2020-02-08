@@ -1,6 +1,6 @@
 import { IBookingGuest } from './IBookingGuest'
 
-interface ICreateBookingResponse {
+interface IBookingResponse {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -8,10 +8,10 @@ interface ICreateBookingResponse {
   date: string;
   time: number;
   guest: IBookingGuest;
-  totalGuest: number;
+  totalGuests: number;
   status: string;
 }
 
-const ICreateBookingResponse = Symbol.for('ICreateBookingResponse');
+const IBookingResponse = Symbol.for('IBookingResponse');
 
-export { ICreateBookingResponse };
+export { IBookingResponse };
