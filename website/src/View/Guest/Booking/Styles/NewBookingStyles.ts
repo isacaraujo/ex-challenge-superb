@@ -1,6 +1,6 @@
-import { StyleRules } from '@material-ui/core';
+import { StyleRules, Theme } from '@material-ui/core';
 
-const NewBookingStyles = (theme: any): StyleRules<any, any> => ({
+const NewBookingStyles = (theme: Theme): StyleRules<any, any> => ({
   root: {
     flexGrow: 1,
   },
