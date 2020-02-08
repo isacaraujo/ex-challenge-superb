@@ -30,6 +30,8 @@ class BookingRepository implements IBookingRepository {
 
   private static readonly GET_BOOKING_BY_ID = '/v1/bookings/:bookingId';
 
+  private static readonly CANCEL_BOOKING = '/v1/bookings/:bookingId';
+
   private static readonly GET_AVAILABILITY = '/v1/bookings/stats';
 
   public constructor(private readonly httpClient: IHttpClient) {}
@@ -116,6 +118,20 @@ class BookingRepository implements IBookingRepository {
         .get<IBookingResponse>(url);
 
       return BookingRecordFactory.fromRecord(response);
+    } catch (error) {
+      const repositoryError = this.getSpecificErrorBasedOn(error);
+
+      throw repositoryError;
+    }
+  }
+
+  public async cancel(booking: Booking): Promise<void> {
+    const bookingId = String(booking.Id);
+
+    const url = BookingRepository.CANCEL_BOOKING.replace(':bookingId', bookingId);
+
+    try {
+      await this.httpClient.delete<any>(url);
     } catch (error) {
       const repositoryError = this.getSpecificErrorBasedOn(error);
 

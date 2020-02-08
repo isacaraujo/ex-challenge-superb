@@ -18,6 +18,8 @@ interface IBookingRepository {
   updateTime(command: UpdateTimeBookingCommand): Promise<void>;
 
   getAvailabilityByDate(date: Moment): Promise<BookingAvailability[]>;
+
+  cancel(booking: Booking): Promise<void>;
 }
 
 const IBookingRepository = Symbol.for('IBookingRepository');
