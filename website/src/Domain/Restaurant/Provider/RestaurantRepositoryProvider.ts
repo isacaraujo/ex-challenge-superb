@@ -1,7 +1,9 @@
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { IContainerService } from '../../../Core/Container/IContainerService';
-import { IRestaurantWorkingDayRepository } from '../Repository/IRestaurantWorkingDayRepository';
-import { RestaurantWorkingDayRepository } from '../Repository/RestaurantWorkingDayRepository';
+import { IRestaurantRepository } from '../Repository/IRestaurantRepository';
+import { RestaurantRepository } from '../Repository/RestaurantRepository';
+import { HttpClientFactory } from '../../../Core/HttpClient/Factory/HttpClientFactory';
+import { IApplicationConfiguration } from '../../../Config/IApplicationConfiguration';
 
 class RestaurantRepositoryProvider implements IProvider {
   public constructor(
@@ -9,14 +11,19 @@ class RestaurantRepositoryProvider implements IProvider {
   ) {}
 
   public register(): void {
-    this.registerLoadSettingsRepository();
+    this.registerRestaurantRepository();
   }
 
-  private registerLoadSettingsRepository(): void {
+  private registerRestaurantRepository(): void {
     this.container.register(
-      IRestaurantWorkingDayRepository,
+      IRestaurantRepository,
       async () => {
-        return new RestaurantWorkingDayRepository();
+        const config = await this.container
+          .get<IApplicationConfiguration>(IApplicationConfiguration);
+
+        const httpClient = HttpClientFactory.create(config.httpBaseUrl());
+
+        return new RestaurantRepository(httpClient);
       })
   }
 }

@@ -15,6 +15,7 @@ import LoginView from './View/Backoffice/Login/LoginView';
 import DashboardView from './View/Backoffice/Dashboard/DashboardView';
 import { IApplicationConfiguration } from './Config/IApplicationConfiguration';
 import { ApplicationConfiguration } from './Config/ApplicationConfiguration';
+import RestaurantEditView from './View/Backoffice/Restaurant/RestaurantEditView';
 
 (async function () {
   const container: IContainerService = ContainerFactory.createInversify();
@@ -41,6 +42,10 @@ import { ApplicationConfiguration } from './Config/ApplicationConfiguration';
 
           <Route exact path="/backoffice">
             <DashboardView />
+          </Route>
+
+          <Route exact path="/backoffice/restaurant/edit">
+            <RestaurantEditView container={container} />
           </Route>
         </Switch>
       </BrowserRouter>

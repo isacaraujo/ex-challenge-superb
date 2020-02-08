@@ -52,14 +52,14 @@ class BookingRepository implements IBookingRepository {
     }
   }
 
-  private getSpecificErrorBasedOn(error: Error): void {
+  private getSpecificErrorBasedOn(error: Error): Error {
     switch (error.constructor) {
       case ForbiddenError:
-        throw new InvalidOperationError(error.message);
+        return new InvalidOperationError(error.message);
       case NotFoundError:
-        throw new RecordNotFoundError('Booking not found');
+        return new RecordNotFoundError('Booking not found');
       default:
-        throw new GenericRepositoryError(error.message);
+        return new GenericRepositoryError(error.message);
     }
   }
 }

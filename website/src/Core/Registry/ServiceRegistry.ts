@@ -2,9 +2,6 @@ import { BookingRepositoryProvider } from '../../Domain/Booking/Provider/Booking
 import {
     RestaurantRepositoryProvider
 } from '../../Domain/Restaurant/Provider/RestaurantRepositoryProvider';
-import {
-    RestaurantServiceProvider
-} from '../../Domain/Restaurant/Provider/RestaurantServiceProvider';
 import { IContainerService } from '../Container/IContainerService';
 import { INewable } from '../Definition/INewable';
 import { IProvider } from '../Provider/IProvider';
@@ -13,7 +10,6 @@ import { IServiceRegistry } from './IServiceRegistry';
 class ServiceRegistry implements IServiceRegistry {
   private static readonly REGISTERED_PROVIDERS: INewable<IProvider>[] = [
     RestaurantRepositoryProvider,
-    RestaurantServiceProvider,
     BookingRepositoryProvider,
   ];
 
