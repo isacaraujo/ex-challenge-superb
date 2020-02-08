@@ -78,10 +78,6 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
     console.log('cancel', booking);
   }
 
-  private handleEditTimeClick(booking: Booking): void {
-    console.log('edit time', booking);
-  }
-
   private async loadBookingsByDate(date: Moment): Promise<void> {
     try {
       const bookings = await this.bookingRepository!.findAllByDate(date);
@@ -143,7 +139,12 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
                 <TableCell>{booking.TotalGuests}</TableCell>
                 <TableCell>{booking.Status}</TableCell>
                 <TableCell align="right">
-                  <IconButton onClick={() => this.handleEditTimeClick(booking)}><EventIcon fontSize="small" /></IconButton>
+                  <IconButton
+                    component={RouterLink}
+                    to={`${path}/bookings/reschedule/${booking.Id}`}
+                  >
+                    <EventIcon fontSize="small" />
+                  </IconButton>
                   <IconButton
                     component={RouterLink}
                     to={`${path}/bookings/edit/${booking.Id}`}

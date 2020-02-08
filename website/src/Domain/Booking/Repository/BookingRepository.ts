@@ -16,11 +16,15 @@ import { IGetBookingAvailabilitiesResponse } from './ResponseType/IGetBookingAva
 import { BookingAvailabilityRecordFactory } from './Factory/BookingAvailabilityRecordFactory';
 import { IGetBookingsResponse } from './ResponseType/IGetBookingsResponse';
 import { UpdateBookingCommand } from '../Type/Command/UpdateBookingCommand';
+import { UpdateTimeBookingCommand } from '../Type/Command/UpdateTimeBookingCommand';
+
 
 class BookingRepository implements IBookingRepository {
   private static readonly POST_BOOKING = '/v1/bookings';
 
   private static readonly UPDATE_BOOKING = '/v1/bookings/:bookingId';
+
+  private static readonly UPDATE_BOOKING_DATE = '/v1/bookings/:bookingId/date';
 
   private static readonly GET_BOOKINGS = '/v1/restaurants/current/bookings';
 
@@ -57,6 +61,27 @@ class BookingRepository implements IBookingRepository {
     const bookingId = String(booking.Id);
 
     const url = BookingRepository.UPDATE_BOOKING.replace(':bookingId', bookingId);
+
+    try {
+      await this.httpClient.put<any>(url, payload);
+    } catch (error) {
+      const repositoryError = this.getSpecificErrorBasedOn(error);
+
+      throw repositoryError;
+    }
+  }
+
+  public async updateTime(command: UpdateTimeBookingCommand): Promise<void> {
+    const payload = {
+      date: command.Date.format('YYYY-MM-DD'),
+      time: command.Time,
+    };
+
+    const booking = command.Booking;
+
+    const bookingId = String(booking.Id);
+
+    const url = BookingRepository.UPDATE_BOOKING_DATE.replace(':bookingId', bookingId);
 
     try {
       await this.httpClient.put<any>(url, payload);

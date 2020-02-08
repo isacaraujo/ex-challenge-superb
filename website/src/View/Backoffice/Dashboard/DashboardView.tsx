@@ -14,6 +14,7 @@ import { IDashboardProps } from './IDashboardProps';
 import { IDashboardState } from './IDashboardState';
 import { DashboardStyles } from './Styles/DashboardStyles';
 import EditBookingView from '../Booking/Edit/EditBookingView';
+import RescheduleBookingView from '../Booking/Reschedule/RescheduleBookingView';
 
 class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
   public constructor(props: IDashboardProps) {
@@ -56,6 +57,12 @@ class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
 
           <Route path={`${path}/bookings/edit/:bookingId`}>
             <EditBookingView
+              container={this.props.container}
+            />
+          </Route>
+
+          <Route path={`${path}/bookings/reschedule/:bookingId`}>
+            <RescheduleBookingView
               container={this.props.container}
             />
           </Route>
