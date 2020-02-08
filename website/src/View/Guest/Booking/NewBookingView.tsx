@@ -273,6 +273,7 @@ class NewBookingView extends React.Component<INewBookingProps, INewBookingState>
 
                 <Grid item xs={12}>
                   <TextField
+                    type="number"
                     variant="outlined"
                     required
                     fullWidth

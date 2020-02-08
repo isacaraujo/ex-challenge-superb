@@ -1,7 +1,7 @@
 import React from 'react';
 import * as _ from 'lodash';
 
-import { withStyles, Container, Grid, Paper, Typography, InputLabel, FormControl, Select, MenuItem, Button } from '@material-ui/core';
+import { withStyles, Container, Grid, Paper, Typography, InputLabel, FormControl, Select, MenuItem, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 
 import AddCircle from '@material-ui/icons/AddCircle';
 
@@ -22,7 +22,7 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
       closeTime: '',
       tablesCount: 0,
       times: _.range(0, 24),
-      modalLoadingOpen: false,
+      modalAddTableOpen: false,
     }
   }
 
@@ -35,8 +35,11 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
     void this.getRestaurantInfo();
   }
 
-  private handleAddTable(): void {
-    
+  private handleConfirmAddTable(): void {
+    this.setState({
+      modalAddTableOpen: false,
+    })
+    void this.addTable();
   }
 
   private changeOpenTime(e: React.ChangeEvent<any>): void {
@@ -84,6 +87,16 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
       void this.getRestaurantInfo();
     } catch (error) {
       console.error('error', error);
+    }
+  }
+
+  private async addTable(): Promise<void> {
+    try {
+      await this.restaurantRepository!.addTable();
+
+      void this.getRestaurantInfo();
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -168,7 +181,7 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
                       variant="contained"
                       color="primary"
                       startIcon={<AddCircle />}
-                      onClick={() => this.handleAddTable()}
+                      onClick={() => this.setState({modalAddTableOpen: true})}
                     >
                       Table
                     </Button>
@@ -177,6 +190,27 @@ class RestaurantEditView extends React.Component<IRestaurantEditProps, IRestaura
               </Paper>
             </Grid>
           </Grid>
+          <Dialog
+            open={this.state.modalAddTableOpen}
+            onClose={() => this.setState({ modalAddTableOpen: false })}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">New table</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Whould you like to add a new table to the restaurant?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => this.setState({modalAddTableOpen: false})} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={() => this.handleConfirmAddTable()} color="primary" autoFocus>
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </BackofficeLayout>
     );
