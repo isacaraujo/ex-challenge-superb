@@ -42,13 +42,15 @@ class DashboardView extends React.Component<IDashboardProps, IDashboardState> {
             </Button>
             </Grid>
             <Grid item xs={12}>
-              <BookingListView />
+              <BookingListView container={this.props.container} />
             </Grid>
           </Grid>
         </Container>
         <Switch>
           <Route path={`${path}/bookings/new`}>
-            <BookingFormView container={this.props.container} />
+            <BookingFormView
+              container={this.props.container}
+            />
           </Route>
         </Switch>
       </BackofficeLayout>

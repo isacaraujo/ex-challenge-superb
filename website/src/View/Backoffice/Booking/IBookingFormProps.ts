@@ -7,6 +7,7 @@ import { IContainerService } from '../../../Core/Container/IContainerService';
 
 interface IBookingFormProps extends WithStyles<typeof BookingFormStyles>, RouteComponentProps<any> {
   container: IContainerService;
+  formSubmitted: () => void;
 }
 
 const IBookingFormProps = Symbol.for('IBookingFormProps');

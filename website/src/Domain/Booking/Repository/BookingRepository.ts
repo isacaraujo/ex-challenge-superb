@@ -11,12 +11,15 @@ import { InvalidOperationError } from '../Error/Repository/InvalidOperationError
 import { RecordNotFoundError } from '../Error/Repository/RecordNotFoundError';
 import { GenericRepositoryError } from '../Error/Repository/GenericRepositoryError';
 import { BookingRecordFactory } from './Factory/BookingRecordFactory';
-import { ICreateBookingResponse } from './ResponseType/ICreateBookingResponse';
+import { IBookingResponse } from './ResponseType/IBookingResponse';
 import { IGetBookingAvailabilitiesResponse } from './ResponseType/IGetBookingAvailabilitiesResponse';
 import { BookingAvailabilityRecordFactory } from './Factory/BookingAvailabilityRecordFactory';
+import { IGetBookingsResponse } from './ResponseType/IGetBookingsResponse';
 
 class BookingRepository implements IBookingRepository {
   private static readonly POST_BOOKING = '/v1/bookings';
+
+  private static readonly GET_BOOKINGS = '/v1/restaurants/current/bookings';
 
   private static readonly GET_AVAILABILITY = '/v1/bookings/stats';
 
@@ -27,9 +30,25 @@ class BookingRepository implements IBookingRepository {
       const record = BookingRecordFactory.createRecordFromCommand(command);
 
       const response = await this.httpClient
-        .post<ICreateBookingResponse>(BookingRepository.POST_BOOKING, record);
+        .post<IBookingResponse>(BookingRepository.POST_BOOKING, record);
 
       return BookingRecordFactory.fromRecord(response);
+    } catch (error) {
+      const repositoryError = this.getSpecificErrorBasedOn(error);
+
+      throw repositoryError;
+    }
+  }
+
+  public async findAllByDate(date: Moment): Promise<Booking[]> {
+    const formatedDate = date.format('YYYY-MM-DD');
+    const url = `${BookingRepository.GET_BOOKINGS}?date=${formatedDate}`;
+
+    try {
+      const response = await this.httpClient
+        .get<IGetBookingsResponse>(url);
+
+      return response.data.map(record => BookingRecordFactory.fromRecord(record));
     } catch (error) {
       const repositoryError = this.getSpecificErrorBasedOn(error);
 
