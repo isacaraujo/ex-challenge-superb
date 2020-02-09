@@ -32,22 +32,15 @@ class GetBookingStatsOperation implements IGetBookingStatsOperation {
     restaurant: Restaurant,
     allStats: BookingStats[]
   ): BookingStats[] {
-    let time = restaurant.OpenTime;
-    const timeGrid = [];
-
-    while (time < restaurant.CloseTime) {
+    return restaurant.TimeSlots.map(time => {
       let selectedStats = allStats.find(stats => stats.Time === time);
 
       if (selectedStats === undefined) {
         selectedStats = BookingStats.createEmpty(date, time);
       }
 
-      timeGrid.push(selectedStats);
-
-      time += 1;
-    }
-
-    return timeGrid;
+      return selectedStats;
+    });
   }
 
   private throwSpecificErrorBasedOn(error: Error): void {

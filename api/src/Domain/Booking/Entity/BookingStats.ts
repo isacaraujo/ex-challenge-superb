@@ -1,5 +1,3 @@
-import { Restaurant } from '../../Restaurant/Entity/Restaurant';
-
 class BookingStats {
   private date: string;
 
@@ -23,14 +21,6 @@ class BookingStats {
 
   public set Time(time: number) {
     this.time = time;
-  }
-
-  public get RealTime(): number {
-    if (this.time >= Restaurant.DAY_IN_HOURS) {
-      return this.time - Restaurant.DAY_IN_HOURS;
-    }
-
-    return this.time;
   }
 
   public get TotalConfirmed(): number {

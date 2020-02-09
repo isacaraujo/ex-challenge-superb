@@ -17,7 +17,7 @@ class RestaurantMapper {
 
   @serialize
   public get CloseTime(): number {
-    return this.restaurant.RealCloseTime;
+    return this.restaurant.CloseTime;
   }
 
   @serialize

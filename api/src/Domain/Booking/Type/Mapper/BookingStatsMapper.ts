@@ -16,7 +16,7 @@ class BookingStatsMapper {
 
   @serialize
   public get Time(): number {
-    return this.stats.RealTime;
+    return this.stats.Time;
   }
 
   @serialize

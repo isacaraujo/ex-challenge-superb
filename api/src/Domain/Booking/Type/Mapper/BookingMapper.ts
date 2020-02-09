@@ -38,7 +38,7 @@ class BookingMapper {
 
   @serialize
   public get Time(): number {
-    return this.booking.RealTime;
+    return this.booking.Time;
   }
 
   @serialize

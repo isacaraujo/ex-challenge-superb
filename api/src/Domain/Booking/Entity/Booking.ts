@@ -1,12 +1,10 @@
 import * as moment from 'moment';
 
+import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { BookingStatus } from './BookingStatus';
 import { Guest } from './Guest';
-import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 
 class Booking {
-  public static readonly DURATION_IN_HOURS = 1;
-
   private id: string;
 
   private createdAt: Date;
@@ -87,18 +85,10 @@ class Booking {
     return this.time >= Restaurant.DAY_IN_HOURS;
   }
 
-  public get RealTime(): number {
-    if (this.IsReservedToNextDay) {
-      return this.time - Restaurant.DAY_IN_HOURS;
-    }
-
-    return this.time;
-  }
-
   public get ReservationDate(): Date {
     const reservationDate = moment(this.date);
 
-    reservationDate.hour(this.RealTime);
+    reservationDate.hour(this.Time);
 
     if (this.IsReservedToNextDay) {
       reservationDate.add(1, 'day');

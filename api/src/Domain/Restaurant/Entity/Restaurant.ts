@@ -1,5 +1,9 @@
+import * as _ from 'lodash';
+
 class Restaurant {
   public static readonly DAY_IN_HOURS = 24;
+
+  public static readonly SLOT_DURATION = 1;
 
   private id: string;
 
@@ -41,16 +45,30 @@ class Restaurant {
     this.closeTime = closeTime;
   }
 
-  public get RealCloseTime(): number {
-    if (this.closeTime >= Restaurant.DAY_IN_HOURS) {
-      return this.closeTime - Restaurant.DAY_IN_HOURS;
-    }
-
-    return this.closeTime;
+  public get IsCloseInNextDay(): boolean {
+    return this.closeTime < this.openTime;
   }
 
-  public get IsCloseInNextDay(): boolean {
-    return this.closeTime >= Restaurant.DAY_IN_HOURS;
+  public get TimeSlots(): number[] {
+    let endTime = this.closeTime;
+
+    if (this.IsCloseInNextDay) {
+      endTime += Restaurant.DAY_IN_HOURS;
+    }
+
+    const slots = [];
+
+    for (let i = this.openTime; i < endTime; i += 1) {
+      let time = i;
+
+      if (time >= Restaurant.DAY_IN_HOURS) {
+        time -= Restaurant.DAY_IN_HOURS;
+      }
+
+      slots.push(time);
+    }
+
+    return slots;
   }
 
   public incrementTable(): void {
@@ -60,13 +78,7 @@ class Restaurant {
   public setTimeRange(openTime: number, closeTime: number): void {
     this.openTime = openTime;
 
-    let closeTimeIndex = closeTime;
-
-    if (closeTime < openTime) {
-      closeTimeIndex = Restaurant.DAY_IN_HOURS + closeTime;
-    }
-
-    this.closeTime = closeTimeIndex;
+    this.closeTime = closeTime;
   }
 }
 
