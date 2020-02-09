@@ -2,6 +2,7 @@ import { IContainerService } from '../../../Core/Container/IContainerService';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { CancelBookingOperation } from '../Operation/CancelBookingOperation';
+import { ConfirmBookingOperation } from '../Operation/ConfirmBookingOperation';
 import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
 import { FindNextWaitingBookingOperation } from '../Operation/FindNextWaitingBookingOperation';
 import { GetBookingDateTimeStatsOperation } from '../Operation/GetBookingDateTimeStatsOperation';
@@ -9,6 +10,7 @@ import { GetBookingOperation } from '../Operation/GetBookingOperation';
 import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
 import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
 import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
+import { IConfirmBookingOperation } from '../Operation/IConfirmBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
 import { IFindNextWaitingBookingOperation } from '../Operation/IFindNextScheduledBookingOperation';
 import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
@@ -38,6 +40,7 @@ class BookingOperationProvider implements IProvider {
     this.registerUpdateBookingDateOperation();
     this.registerCancelBookingOperation();
     this.registerFindNextWaitingBookingOperation();
+    this.registerConfirmBookingOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -186,6 +189,20 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new FindNextWaitingBookingOperation(repository, logger);
+      });
+  }
+
+  private registerConfirmBookingOperation(): void {
+    this.container.register(
+      IConfirmBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new ConfirmBookingOperation(repository, logger);
       });
   }
 }
