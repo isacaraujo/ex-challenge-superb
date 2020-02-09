@@ -3,8 +3,12 @@ import { MongooseProvider } from '../Core/Database/Driver/Mongoose/Provider/Mong
 import { INewable } from '../Core/Definition/INewable';
 import { LoggerProvider } from '../Core/Logger/Provider/LoggerProvider';
 import { IProvider } from '../Core/Provider/IProvider';
+import { ConsumerQueueProvider } from '../Core/Queue/Provider/ConsumerQueueProvider';
+import { QueueProvider } from '../Core/Queue/Provider/QueueProvider';
+import { BookingConsumerProvider } from '../Domain/Booking/Provider/BookingConsumerProvider';
 import { BookingControllerProvider } from '../Domain/Booking/Provider/BookingControllerProvider';
 import { BookingOperationProvider } from '../Domain/Booking/Provider/BookingOperationProvider';
+import { BookingQueueProvider } from '../Domain/Booking/Provider/BookingQueueProvider';
 import { BookingRepositoryProvider } from '../Domain/Booking/Provider/BookingRepositoryProvider';
 import { BookingValidationProvider } from '../Domain/Booking/Provider/BookingValidationProvider';
 import { HealthProvider } from '../Domain/Health/Provider/HealthProvider';
@@ -17,12 +21,16 @@ import {
 import {
     RestaurantRepositoryProvider
 } from '../Domain/Restaurant/Provider/RestaurantRepositoryProvider';
-import { RestaurantValidationProvider } from '../Domain/Restaurant/Provider/RestaurantValidationProvider';
+import {
+    RestaurantValidationProvider
+} from '../Domain/Restaurant/Provider/RestaurantValidationProvider';
 
 class ContainerRegistry {
   private static readonly REGISTERED_PROVIDERS: INewable<IProvider>[] = [
     MongooseProvider,
     LoggerProvider,
+    QueueProvider,
+    ConsumerQueueProvider,
     RestaurantRepositoryProvider,
     RestaurantOperationProvider,
     RestaurantValidationProvider,
@@ -31,6 +39,8 @@ class ContainerRegistry {
     BookingOperationProvider,
     BookingValidationProvider,
     BookingControllerProvider,
+    BookingQueueProvider,
+    BookingConsumerProvider,
     HealthProvider,
   ];
 

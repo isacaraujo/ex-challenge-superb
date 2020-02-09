@@ -15,6 +15,7 @@ Before start the server, ensure you have created all docker volumes in order to 
 
 ```
 $ docker volume create mongodbdata
+$ docker volume create rabbitmqdata
 ```
 
 Then, you will able to start the environment:
