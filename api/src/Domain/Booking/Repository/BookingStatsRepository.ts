@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { Types } from 'mongoose';
 
 import {
     IMongooseConnection
@@ -20,15 +21,16 @@ class BookingStatsRepository extends MongooseRepository<IBookingModel> implement
     super(connection, BookingRepository.COLLECTION, BookingSchema);
   }
 
-  public async consolidateByDate(_restaurant: Restaurant, date: string): Promise<BookingStats[]> {
+  public async consolidateByDate(restaurant: Restaurant, date: string): Promise<BookingStats[]> {
     try {
       const results = await this.documentModel.aggregate([
         {
           $match: {
+            date,
             status: {
               $in: [BookingStatus.SCHEDULED, BookingStatus.CONFIRMED]
             },
-            date
+            restaurantId: Types.ObjectId(restaurant.Id),
           }
         }, {
           $group: {
@@ -44,7 +46,7 @@ class BookingStatsRepository extends MongooseRepository<IBookingModel> implement
     }
   }
 
-  public async consolidateByDateAndTime(_restaurant: Restaurant, date: string, time: number): Promise<BookingStats> {
+  public async consolidateByDateAndTime(restaurant: Restaurant, date: string, time: number): Promise<BookingStats> {
     try {
       const results = await this.documentModel.aggregate([
         {
@@ -53,7 +55,8 @@ class BookingStatsRepository extends MongooseRepository<IBookingModel> implement
               $in: [BookingStatus.SCHEDULED, BookingStatus.CONFIRMED]
             },
             date,
-            time
+            time,
+            restaurantId: Types.ObjectId(restaurant.Id),
           }
         }, {
           $group: {
