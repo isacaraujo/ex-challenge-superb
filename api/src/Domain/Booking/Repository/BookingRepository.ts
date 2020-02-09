@@ -9,6 +9,7 @@ import {
 import { FindRecordError } from '../../../Core/Error/Repository/FindRecordError';
 import { RecordNotFoundError } from '../../../Core/Error/Repository/RecordNotFoundError';
 import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError';
+import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { Booking } from '../Entity/Booking';
 import { BookingStatus } from '../Entity/BookingStatus';
 import { BookingRecordFactory } from './Factory/BookingRecordFactory';
@@ -76,6 +77,27 @@ class BookingRepository extends MongooseRepository<IBookingModel> implements IBo
 
     if (_.isEmpty(record)) {
       throw new RecordNotFoundError('Booking not found');
+    }
+
+    return BookingRecordFactory.createFromRecord(record);
+  }
+
+  public async findNextPending(_restaurant: Restaurant, date: string, time: number): Promise<Booking> {
+    let record: IBookingModel;
+
+    try {
+      record = await this.documentModel.findOne({
+        status: BookingStatus.SCHEDULED,
+        date,
+        time,
+      })
+      .sort({ createdAt: 1 });
+    } catch (error) {
+      throw new FindRecordError('Find next pending booking', error);
+    }
+
+    if (_.isEmpty(record)) {
+      throw new RecordNotFoundError('No scheduled booking found');
     }
 
     return BookingRecordFactory.createFromRecord(record);

@@ -3,12 +3,14 @@ import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
 import { CancelBookingOperation } from '../Operation/CancelBookingOperation';
 import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
+import { FindNextWaitingBookingOperation } from '../Operation/FindNextWaitingBookingOperation';
 import { GetBookingDateTimeStatsOperation } from '../Operation/GetBookingDateTimeStatsOperation';
 import { GetBookingOperation } from '../Operation/GetBookingOperation';
 import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
 import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
 import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IFindNextWaitingBookingOperation } from '../Operation/IFindNextScheduledBookingOperation';
 import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
@@ -35,6 +37,7 @@ class BookingOperationProvider implements IProvider {
     this.registerGetBookingDateTimeStatsOperation();
     this.registerUpdateBookingDateOperation();
     this.registerCancelBookingOperation();
+    this.registerFindNextWaitingBookingOperation();
   }
 
   private registerGuestCreateBookingOperation(): void {
@@ -169,6 +172,20 @@ class BookingOperationProvider implements IProvider {
           .get<ILogger>(ILogger);
 
         return new GetBookingDateTimeStatsOperation(repository, logger);
+      });
+  }
+
+  private registerFindNextWaitingBookingOperation(): void {
+    this.container.register(
+      IFindNextWaitingBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new FindNextWaitingBookingOperation(repository, logger);
       });
   }
 }

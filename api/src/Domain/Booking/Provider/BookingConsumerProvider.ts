@@ -5,6 +5,7 @@ import {
 } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 import { INextPendingBookingConsumer } from '../Consumer/INextPendingBookingConsumer';
 import { NextPendingBookingConsumer } from '../Consumer/NextPendingBookingConsumer';
+import { IFindNextWaitingBookingOperation } from '../Operation/IFindNextScheduledBookingOperation';
 import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 
 class BookingConsumerProvider implements IProvider {
@@ -24,7 +25,14 @@ class BookingConsumerProvider implements IProvider {
         const getStats = await this.container
           .get<IGetBookingDateTimeStatsOperation>(IGetBookingDateTimeStatsOperation);
 
-        return new NextPendingBookingConsumer(findRestaurant, getStats);
+        const findNextWaitingBooking = await this.container
+          .get<IFindNextWaitingBookingOperation>(IFindNextWaitingBookingOperation);
+
+        return new NextPendingBookingConsumer(
+          findRestaurant,
+          getStats,
+          findNextWaitingBooking
+        );
       });
   }
 }
