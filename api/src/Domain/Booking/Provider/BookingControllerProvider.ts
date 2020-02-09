@@ -54,12 +54,16 @@ class BookingControllerProvider implements IProvider {
         const findRestaurant = await this.container
           .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
 
+        const getStats = await this.container
+          .get<IGetBookingDateTimeStatsOperation>(IGetBookingDateTimeStatsOperation);
+
         const createBooking = await this.container
           .get<ICreateBookingOperation>(ICreateBookingOperation);
 
         const controller = new CreateBookingController(
           validation,
           findRestaurant,
+          getStats,
           createBooking
           
         );

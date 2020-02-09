@@ -16,7 +16,8 @@ services:
       - backend
     ports:
       - 3001:3000/tcp
-    command: bash -c 'yarn install && tsc && npm start'
+    # command: bash -c 'yarn install && tsc && npm start'
+    command: cat -
 
   # superb-website:
   #   build: ./website
