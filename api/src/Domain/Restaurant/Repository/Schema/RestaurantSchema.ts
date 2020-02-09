@@ -1,9 +1,9 @@
 import { SchemaDefinition } from 'mongoose';
 
 const RestaurantSchema: SchemaDefinition = {
-  tablesCount: Number,
-  openTime: Number,
-  closeTime: Number,
+  tablesCount: { type: Number, required: true },
+  openTime: { type: Number, required: true },
+  closeTime: { type: Number, required: true },
 };
 
 export { RestaurantSchema };

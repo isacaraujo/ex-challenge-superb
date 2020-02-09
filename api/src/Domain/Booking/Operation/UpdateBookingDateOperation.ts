@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import { IUpdateBookingDateOperation } from './IUpdateBookingDateOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { UpdateBookingDateCommand } from '../Type/Command/Operation/UpdateBookingDateCommand';
@@ -20,11 +22,14 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     const booking = command.Booking;
     const restaurant = command.Restaurant;
     const date = command.Date;
+    const time = command.Time;
     const stats = command.Stats;
 
-    this.validateTimeRange(restaurant, command.Time);
+    this.validateTimeRange(restaurant, time);
 
-    booking.updateDateTime(date, command.Time);
+    const reservationDate = this.createReservationDate(restaurant, date, time);
+
+    booking.updateDateTime(date, time, reservationDate);
 
     const hasAvailableTables = this.hasAvailableTables(restaurant, stats);
 
@@ -49,6 +54,18 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     if (slots.indexOf(bookingTime) === -1) {
       throw new BookingOutOfTimeRangeError(bookingTime, restaurant.OpenTime, restaurant.CloseTime);
     }
+  }
+
+  private createReservationDate(restaurant: Restaurant, date: string, time: number): Date {
+    const reservationDate = moment(date);
+
+    reservationDate.hour(time);
+
+    if (time < restaurant.OpenTime) {
+      reservationDate.add(1, 'day');
+    }
+
+    return reservationDate.toDate();
   }
 
   private hasAvailableTables(restaurant: Restaurant, bookingStats: BookingStats): boolean {

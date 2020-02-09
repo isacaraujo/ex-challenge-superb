@@ -19,6 +19,8 @@ class BookingRecordFactory {
       },
       totalGuests: booking.TotalGuests,
       status: booking.Status,
+      restaurantId: booking.RestaurantId,
+      reservationDate: booking.ReservationDate,
     };
 
     return _.omitBy(record, value => value === undefined || value === null);
@@ -37,6 +39,8 @@ class BookingRecordFactory {
     booking.TotalGuests = record.totalGuests;
     booking.Status = record.status;
     booking.Guest = guest;
+    booking.RestaurantId = record.restaurantId;
+    booking.ReservationDate = record.reservationDate;
 
     return booking;
   }

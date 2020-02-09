@@ -1,5 +1,3 @@
-import * as moment from 'moment';
-
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { BookingStatus } from './BookingStatus';
 import { Guest } from './Guest';
@@ -24,6 +22,10 @@ class Booking {
   private totalGuests: number;
 
   private status: BookingStatus;
+
+  private restaurantId: string;
+
+  private reservationDate: Date;
 
   public get Id(): string {
     return this.id;
@@ -85,18 +87,6 @@ class Booking {
     return this.time >= Restaurant.DAY_IN_HOURS;
   }
 
-  public get ReservationDate(): Date {
-    const reservationDate = moment(this.date);
-
-    reservationDate.hour(this.Time);
-
-    if (this.IsReservedToNextDay) {
-      reservationDate.add(1, 'day');
-    }
-
-    return reservationDate.toDate();
-  }
-
   public get Guest(): Guest {
     return this.guest;
   }
@@ -119,6 +109,22 @@ class Booking {
 
   public set Status(status: BookingStatus) {
     this.status = status;
+  }
+
+  public get RestaurantId(): string {
+    return this.restaurantId;
+  }
+
+  public set RestaurantId(restaurantId: string) {
+    this.restaurantId = restaurantId;
+  }
+
+  public get ReservationDate(): Date {
+    return this.reservationDate;
+  }
+
+  public set ReservationDate(reservationDate: Date) {
+    this.reservationDate = reservationDate;
   }
 
   public get IsCanceled(): boolean {
@@ -154,9 +160,10 @@ class Booking {
     this.updatedAt = new Date();
   }
 
-  public updateDateTime(date: string, time: number): void {
+  public updateDateTime(date: string, time: number, reservationDate: Date): void {
     this.date = date;
     this.time = time;
+    this.reservationDate = reservationDate;
     this.updatedAt = new Date();
   }
 
@@ -165,7 +172,9 @@ class Booking {
     time: number,
     guestName: string,
     guestEmail: string,
-    totalGuests: number
+    totalGuests: number,
+    restaurantId: string,
+    reservationDate: Date
   ): Booking {
     const guest = new Guest(guestName, guestEmail);
     const booking = new Booking();
@@ -178,6 +187,8 @@ class Booking {
     booking.createdAt = now;
     booking.updatedAt = now;
     booking.status = BookingStatus.SCHEDULED;
+    booking.RestaurantId = restaurantId;
+    booking.ReservationDate = reservationDate;
 
     return booking;
   }

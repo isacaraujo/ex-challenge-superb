@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
 import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError';
 import { ILogger } from '../../../Core/Logger/ILogger';
@@ -22,12 +24,20 @@ class CreateBookingOperation implements ICreateBookingOperation {
 
     this.validateTimeRange(restaurant, command.Time);
 
+    const reservationDate = this.createReservationDate(
+      restaurant,
+      command.Date,
+      command.Time
+    );
+
     const booking = Booking.newBooking(
       command.Date,
       command.Time,
       command.GuestName,
       command.GuestEmail,
-      command.TotalGuests
+      command.TotalGuests,
+      restaurant.Id,
+      reservationDate
     );
 
     const shouldConfirmBooking = this.shouldConfirmBooking(restaurant, stats);
@@ -55,6 +65,18 @@ class CreateBookingOperation implements ICreateBookingOperation {
     }
 
     return bookingStats.TotalConfirmed < restaurant.TablesCount;
+  }
+
+  private createReservationDate(restaurant: Restaurant, date: string, time: number): Date {
+    const reservationDate = moment(date);
+
+    reservationDate.hour(time);
+
+    if (time < restaurant.OpenTime) {
+      reservationDate.add(1, 'day');
+    }
+
+    return reservationDate.toDate();
   }
 
   private async saveBooking(booking: Booking): Promise<void> {
