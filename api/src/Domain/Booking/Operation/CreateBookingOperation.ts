@@ -20,21 +20,11 @@ class CreateBookingOperation implements ICreateBookingOperation {
     const restaurant = command.Restaurant;
     const stats = command.Stats;
 
-    let bookingTime = command.Time;
-
-    if (restaurant.IsCloseInNextDay && bookingTime < restaurant.OpenTime) {
-      bookingTime += Restaurant.DAY_IN_HOURS;
-    }
-
-    if (bookingTime < restaurant.OpenTime || bookingTime > restaurant.CloseTime - Booking.DURATION_IN_HOURS) {
-      const lastScheduleTime = restaurant.RealCloseTime - Booking.DURATION_IN_HOURS;
-
-      throw new BookingOutOfTimeRangeError(command.Time, restaurant.OpenTime, lastScheduleTime);
-    }
+    this.validateTimeRange(restaurant, command.Time);
 
     const booking = Booking.newBooking(
       command.Date,
-      bookingTime,
+      command.Time,
       command.GuestName,
       command.GuestEmail,
       command.TotalGuests
@@ -49,6 +39,14 @@ class CreateBookingOperation implements ICreateBookingOperation {
     await this.saveBooking(booking);
 
     return booking;
+  }
+
+  private validateTimeRange(restaurant: Restaurant, bookingTime: number): void {
+    const slots = restaurant.TimeSlots;
+
+    if (slots.indexOf(bookingTime) === -1) {
+      throw new BookingOutOfTimeRangeError(bookingTime, restaurant.OpenTime, restaurant.CloseTime);
+    }
   }
 
   private shouldConfirmBooking(restaurant: Restaurant, bookingStats: BookingStats): boolean {

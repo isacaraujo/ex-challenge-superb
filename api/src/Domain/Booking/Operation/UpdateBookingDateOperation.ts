@@ -2,7 +2,6 @@ import { IUpdateBookingDateOperation } from './IUpdateBookingDateOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { UpdateBookingDateCommand } from '../Type/Command/Operation/UpdateBookingDateCommand';
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
-import { Booking } from '../Entity/Booking';
 import { BookingOutOfTimeRangeError } from '../Error/Operation/BookingOutOfTimeRangeError';
 import { BookingNoTablesLeftError } from '../Error/Operation/BookingNoTablesLeftError';
 import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError';
@@ -23,19 +22,9 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     const date = command.Date;
     const stats = command.Stats;
 
-    let bookingTime = command.Time;
+    this.validateTimeRange(restaurant, command.Time);
 
-    if (restaurant.IsCloseInNextDay && bookingTime < restaurant.OpenTime) {
-      bookingTime += Restaurant.DAY_IN_HOURS;
-    }
-
-    if (bookingTime < restaurant.OpenTime || bookingTime > restaurant.CloseTime - Booking.DURATION_IN_HOURS) {
-      const lastScheduleTime = restaurant.RealCloseTime - Booking.DURATION_IN_HOURS;
-
-      throw new BookingOutOfTimeRangeError(command.Time, restaurant.OpenTime, lastScheduleTime);
-    }
-
-    booking.updateDateTime(date, bookingTime);
+    booking.updateDateTime(date, command.Time);
 
     const hasAvailableTables = this.hasAvailableTables(restaurant, stats);
 
@@ -51,6 +40,14 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
       await this.bookingRepository.update(booking);
     } catch (error) {
       this.throwSpecificErrorBasedOn(error);
+    }
+  }
+
+  private validateTimeRange(restaurant: Restaurant, bookingTime: number): void {
+    const slots = restaurant.TimeSlots;
+
+    if (slots.indexOf(bookingTime) === -1) {
+      throw new BookingOutOfTimeRangeError(bookingTime, restaurant.OpenTime, restaurant.CloseTime);
     }
   }
 
