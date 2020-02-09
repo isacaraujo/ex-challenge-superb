@@ -3,7 +3,6 @@ import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError'
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { Booking } from '../Entity/Booking';
-import { BookingNoTablesLeftError } from '../Error/Operation/BookingNoTablesLeftError';
 import { BookingOutOfTimeRangeError } from '../Error/Operation/BookingOutOfTimeRangeError';
 import { CreateBookingGenericError } from '../Error/Operation/CreateBookingGenericError';
 import { IBookingRepository } from '../Repository/IBookingRepository';
@@ -42,11 +41,9 @@ class CreateBookingOperation implements ICreateBookingOperation {
 
     const shouldConfirmBooking = await this.shouldConfirmBooking(restaurant, booking);
 
-    if (!shouldConfirmBooking) {
-      throw new BookingNoTablesLeftError();
+    if (shouldConfirmBooking) {
+      booking.confirm();
     }
-
-    booking.confirm();
 
     await this.saveBooking(booking);
 
@@ -85,13 +82,17 @@ class CreateBookingOperation implements ICreateBookingOperation {
       case AggregateRecordError:
         const recordError = error as SaveRecordError;
 
-        this.logger.error(`CreateBookingGenericError: ${recordError.message}`, { error: recordError.OriginalError });
+        this.logger.error(
+          `CreateBookingGenericError: ${recordError.message}`,
+          { error: recordError.OriginalError }
+        );
 
         throw new CreateBookingGenericError(error.message);
       default:
-        const message = `CreateBookingGenericError: ${error.constructor.name}: ${error.message}`;
-
-        this.logger.error(message, { error });
+        this.logger.error(
+          `CreateBookingGenericError: ${error.constructor.name}: ${error.message}`,
+          { error }
+        );
 
         throw new CreateBookingGenericError(error.message);
     }
