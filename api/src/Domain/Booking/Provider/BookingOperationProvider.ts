@@ -140,13 +140,10 @@ class BookingOperationProvider implements IProvider {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
-        const statsRepository = await this.container
-          .get<IBookingStatsRepository>(IBookingStatsRepository);
-
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new UpdateBookingDateOperation(repository, statsRepository, logger);
+        return new UpdateBookingDateOperation(repository, logger);
       });
   }
 

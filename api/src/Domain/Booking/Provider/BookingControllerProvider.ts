@@ -21,6 +21,7 @@ import { UpdateBookingController } from '../Controller/UpdateBookingController';
 import { UpdateBookingDateController } from '../Controller/UpdateBookingDateController';
 import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
 import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
@@ -167,6 +168,9 @@ class BookingControllerProvider implements IProvider {
         const findRestaurant = await this.container
           .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
 
+        const getBookingStats = await this.container
+          .get<IGetBookingDateTimeStatsOperation>(IGetBookingDateTimeStatsOperation);
+
         const getBooking = await this.container
           .get<IGetBookingOperation>(IGetBookingOperation);
 
@@ -176,6 +180,7 @@ class BookingControllerProvider implements IProvider {
         return new UpdateBookingDateController(
           validation,
           findRestaurant,
+          getBookingStats,
           getBooking,
           updateBookingDate
         );
