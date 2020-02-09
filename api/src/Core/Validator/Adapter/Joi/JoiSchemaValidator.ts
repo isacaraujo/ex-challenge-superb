@@ -8,14 +8,11 @@ class JoiSchemaValidator<T> implements ISchemaValidator<T> {
   public constructor(private readonly schema: Joi.Schema) {}
 
   public validate(params: T): void {
-    const result = this.schema.validate(params, {
-      abortEarly: false
-    });
+    const result = this.schema.validate(params);
 
     if (result.error !== undefined) {
-      console.error(result.error);
-
-      throw new ConstraintViolatedError('Schema is invalid', result.error.details);
+      const originalError = result.error;
+      throw new ConstraintViolatedError(originalError.message, originalError);
     }
 
     _.extend(params, result.value);
