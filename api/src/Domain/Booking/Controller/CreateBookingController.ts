@@ -5,6 +5,7 @@ import {
     IFindCurrentRestaurantOperation
 } from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 import { CreateBookingCommand } from '../Type/Command/Operation/CreateBookingCommand';
 import { BookingMapper } from '../Type/Mapper/BookingMapper';
 import { ICreateBookingValidation } from '../Validation/ICreateBookingValidation';
@@ -14,6 +15,7 @@ class CreateBookingController extends ActionController implements ICreateBooking
   public constructor(
     private readonly validation: ICreateBookingValidation,
     private readonly findRestaurant: IFindCurrentRestaurantOperation,
+    private readonly getStats: IGetBookingDateTimeStatsOperation,
     private readonly createBooking: ICreateBookingOperation
   ) {
     super();
@@ -26,7 +28,9 @@ class CreateBookingController extends ActionController implements ICreateBooking
 
       const restaurant = await this.findRestaurant.execute();
 
-      const command = CreateBookingCommand.create(restaurant, payload);
+      const stats = await this.getStats.execute(restaurant, payload.date, payload.time);
+
+      const command = CreateBookingCommand.create(restaurant, stats, payload);
 
       const booking = await this.createBooking.execute(command);
 

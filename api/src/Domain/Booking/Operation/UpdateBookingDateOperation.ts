@@ -1,6 +1,5 @@
 import { IUpdateBookingDateOperation } from './IUpdateBookingDateOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
-import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
 import { UpdateBookingDateCommand } from '../Type/Command/Operation/UpdateBookingDateCommand';
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { Booking } from '../Entity/Booking';
@@ -10,11 +9,11 @@ import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError'
 import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
 import { UpdateBookingGenericError } from '../Error/Operation/UpdateBookingGenericError';
 import { ILogger } from '../../../Core/Logger/ILogger';
+import { BookingStats } from '../Entity/BookingStats';
 
 class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
   public constructor(
     private readonly bookingRepository: IBookingRepository,
-    private readonly bookingStatsRepository: IBookingStatsRepository,
     private readonly logger: ILogger
   ) {}
 
@@ -22,6 +21,8 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     const booking = command.Booking;
     const restaurant = command.Restaurant;
     const date = command.Date;
+    const stats = command.Stats;
+
     let bookingTime = command.Time;
 
     if (restaurant.IsCloseInNextDay && bookingTime < restaurant.OpenTime) {
@@ -36,7 +37,7 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
 
     booking.updateDateTime(date, bookingTime);
 
-    const hasAvailableTables = await this.hasAvailableTables(restaurant, booking);
+    const hasAvailableTables = this.hasAvailableTables(restaurant, stats);
 
     if (!hasAvailableTables) {
       throw new BookingNoTablesLeftError();
@@ -53,21 +54,12 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
     }
   }
 
-  private async hasAvailableTables(restaurant: Restaurant, booking: Booking): Promise<boolean> {
-    try {
-      const bookingStats = await this.bookingStatsRepository.consolidateByDateAndTime(
-        booking.Date,
-        booking.Time
-      );
-
-      if (bookingStats.TotalScheduled > 0) {
-        return false;
-      }
-
-      return bookingStats.TotalConfirmed < restaurant.TablesCount;
-    } catch (error) {
-      this.throwSpecificErrorBasedOn(error);
+  private hasAvailableTables(restaurant: Restaurant, bookingStats: BookingStats): boolean {
+    if (bookingStats.TotalScheduled > 0) {
+      return false;
     }
+
+    return bookingStats.TotalConfirmed < restaurant.TablesCount;
   }
 
   private throwSpecificErrorBasedOn(error: Error): void {
@@ -76,13 +68,17 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
       case AggregateRecordError:
         const recordError = error as SaveRecordError;
 
-        this.logger.error(`UpdateBookingGenericError: ${recordError.message}`, { error: recordError.OriginalError });
+        this.logger.error(
+          `UpdateBookingGenericError: ${recordError.message}`,
+          { error: recordError.OriginalError }
+        );
 
         throw new UpdateBookingGenericError();
       default:
-        const message = `UpdateBookingGenericError: ${error.constructor.name}: ${error.message}`;
-
-        this.logger.error(message, { error });
+        this.logger.error(
+          `UpdateBookingGenericError: ${error.constructor.name}: ${error.message}`,
+          { error }
+        );
 
         throw new UpdateBookingGenericError();
     }

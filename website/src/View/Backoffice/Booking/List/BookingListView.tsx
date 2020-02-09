@@ -20,7 +20,6 @@ import EventIcon from '@material-ui/icons/Event';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import { Booking } from '../../../../Domain/Booking/Entity/Booking';
 import { IBookingRepository } from '../../../../Domain/Booking/Repository/IBookingRepository';
 import { IBookingListProps } from './IBookingListProps';
 import { IBookingListState } from './IBookingListState';
@@ -78,10 +77,10 @@ class BookingListView extends React.Component<IBookingListProps, IBookingListSta
     this.setState({
       selectedDate: date,
     });
-  }
 
-  private handleCancelClick(booking: Booking): void {
-    console.log('cancel', booking);
+    if (date) {
+      void this.loadBookingsByDate(date);
+    }
   }
 
   private async loadBookingsByDate(date: Moment): Promise<void> {

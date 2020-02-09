@@ -10,6 +10,17 @@
       "node_args": [],
       "watch": ["dist"],
       "extends": "tsconfig.json"
+    },
+    {
+      "name": "superb-consumer",
+      "script": "dist/main.js",
+      "args": "start-consumer",
+      "exec_mode": "fork",
+      "instance_var": "SUPERB_CONSUMER",
+      "source_map_support": true,
+      "node_args": [],
+      "watch": ["dist"],
+      "extends": "tsconfig.json"
     }
   ]
 }

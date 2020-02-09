@@ -147,7 +147,7 @@ class NewBookingView extends React.Component<INewBookingProps, INewBookingState>
       if (booking.IsScheduled) {
         this.presentDialog(
           'You are in the queue',
-          `Your reserved was scheduled to ${date} and if anyone resign we will call you!`
+          `Your reserved was scheduled to ${date} and if anyone cancel we will call you!`
         );
         
         this.resetForm();
@@ -167,6 +167,8 @@ class NewBookingView extends React.Component<INewBookingProps, INewBookingState>
   }
 
   private resetForm(): void {
+    const now = moment();
+
     this.setState({
       date: null,
       name: '',
@@ -177,6 +179,8 @@ class NewBookingView extends React.Component<INewBookingProps, INewBookingState>
       times: [],
       time: '',
     });
+
+    void this.handleDateChange(now);
   }
 
   private presentDialog(title: string, content: string): void {
@@ -340,7 +344,7 @@ class NewBookingView extends React.Component<INewBookingProps, INewBookingState>
     return (
       <Alert severity="warning" className={classes.availabilityAlert}>
         Sorry, but all tables were reserved
-        for ${formatDate} at {formatHour}.<br />
+        for {formatDate} at {formatHour}.<br />
         You can choose another date or time,
         or wait for some other cancel the reservation.</Alert>
     );

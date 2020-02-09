@@ -1,7 +1,13 @@
-import { IProvider } from '../../../Core/Provider/IProvider';
 import { IContainerService } from '../../../Core/Container/IContainerService';
+import { IProvider } from '../../../Core/Provider/IProvider';
+import {
+    IFindCurrentRestaurantOperation
+} from '../../Restaurant/Operation/IFindCurrentRestaurantOperation';
 import { INextPendingBookingConsumer } from '../Consumer/INextPendingBookingConsumer';
 import { NextPendingBookingConsumer } from '../Consumer/NextPendingBookingConsumer';
+import { IConfirmBookingOperation } from '../Operation/IConfirmBookingOperation';
+import { IFindNextWaitingBookingOperation } from '../Operation/IFindNextScheduledBookingOperation';
+import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 
 class BookingConsumerProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -14,9 +20,25 @@ class BookingConsumerProvider implements IProvider {
     this.container.register(
       INextPendingBookingConsumer,
       async () => {
-        return Promise.resolve(new NextPendingBookingConsumer());
-      }
-    );
+        const findRestaurant = await this.container
+          .get<IFindCurrentRestaurantOperation>(IFindCurrentRestaurantOperation);
+
+        const getStats = await this.container
+          .get<IGetBookingDateTimeStatsOperation>(IGetBookingDateTimeStatsOperation);
+
+        const findNextWaitingBooking = await this.container
+          .get<IFindNextWaitingBookingOperation>(IFindNextWaitingBookingOperation);
+
+        const confirmBooking = await this.container
+          .get<IConfirmBookingOperation>(IConfirmBookingOperation);
+
+        return new NextPendingBookingConsumer(
+          findRestaurant,
+          getStats,
+          findNextWaitingBooking,
+          confirmBooking
+        );
+      });
   }
 }
 

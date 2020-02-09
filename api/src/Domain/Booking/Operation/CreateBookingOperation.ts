@@ -3,23 +3,23 @@ import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError'
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { Booking } from '../Entity/Booking';
-import { BookingNoTablesLeftError } from '../Error/Operation/BookingNoTablesLeftError';
+import { BookingStats } from '../Entity/BookingStats';
 import { BookingOutOfTimeRangeError } from '../Error/Operation/BookingOutOfTimeRangeError';
 import { CreateBookingGenericError } from '../Error/Operation/CreateBookingGenericError';
 import { IBookingRepository } from '../Repository/IBookingRepository';
-import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
 import { CreateBookingCommand } from '../Type/Command/Operation/CreateBookingCommand';
 import { ICreateBookingOperation } from './ICreateBookingOperation';
 
 class CreateBookingOperation implements ICreateBookingOperation {
   public constructor(
     private readonly bookingRepository: IBookingRepository,
-    private readonly bookingStatsRepository: IBookingStatsRepository,
     private readonly logger: ILogger
   ) {}
 
   public async execute(command: CreateBookingCommand): Promise<Booking> {
     const restaurant = command.Restaurant;
+    const stats = command.Stats;
+
     let bookingTime = command.Time;
 
     if (restaurant.IsCloseInNextDay && bookingTime < restaurant.OpenTime) {
@@ -40,34 +40,23 @@ class CreateBookingOperation implements ICreateBookingOperation {
       command.TotalGuests
     );
 
-    const shouldConfirmBooking = await this.shouldConfirmBooking(restaurant, booking);
+    const shouldConfirmBooking = this.shouldConfirmBooking(restaurant, stats);
 
-    if (!shouldConfirmBooking) {
-      throw new BookingNoTablesLeftError();
+    if (shouldConfirmBooking) {
+      booking.confirm();
     }
-
-    booking.confirm();
 
     await this.saveBooking(booking);
 
     return booking;
   }
 
-  private async shouldConfirmBooking(restaurant: Restaurant, booking: Booking): Promise<boolean> {
-    try {
-      const bookingStats = await this.bookingStatsRepository.consolidateByDateAndTime(
-        booking.Date,
-        booking.Time
-      );
-
-      if (bookingStats.TotalScheduled > 0) {
-        return false;
-      }
-
-      return bookingStats.TotalConfirmed < restaurant.TablesCount;
-    } catch (error) {
-      this.throwSpecificErrorBasedOn(error);
+  private shouldConfirmBooking(restaurant: Restaurant, bookingStats: BookingStats): boolean {
+    if (bookingStats.TotalScheduled > 0) {
+      return false;
     }
+
+    return bookingStats.TotalConfirmed < restaurant.TablesCount;
   }
 
   private async saveBooking(booking: Booking): Promise<void> {
@@ -84,13 +73,17 @@ class CreateBookingOperation implements ICreateBookingOperation {
       case AggregateRecordError:
         const recordError = error as SaveRecordError;
 
-        this.logger.error(`CreateBookingGenericError: ${recordError.message}`, { error: recordError.OriginalError });
+        this.logger.error(
+          `CreateBookingGenericError: ${recordError.message}`,
+          { error: recordError.OriginalError }
+        );
 
         throw new CreateBookingGenericError(error.message);
       default:
-        const message = `CreateBookingGenericError: ${error.constructor.name}: ${error.message}`;
-
-        this.logger.error(message, { error });
+        this.logger.error(
+          `CreateBookingGenericError: ${error.constructor.name}: ${error.message}`,
+          { error }
+        );
 
         throw new CreateBookingGenericError(error.message);
     }

@@ -20,7 +20,7 @@ import { UpdateTimeBookingCommand } from '../Type/Command/UpdateTimeBookingComma
 
 
 class BookingRepository implements IBookingRepository {
-  private static readonly POST_BOOKING = '/v1/bookings';
+  private static readonly POST_BOOKING = '/v1/restaurants/current/bookings';
 
   private static readonly UPDATE_BOOKING = '/v1/bookings/:bookingId';
 

@@ -5,9 +5,6 @@ import { IGetBookingController } from '../../Domain/Booking/Controller/IGetBooki
 import {
     IGetBookingStatsController
 } from '../../Domain/Booking/Controller/IGetBookingStatsController';
-import {
-    IGuestCreateBookingController
-} from '../../Domain/Booking/Controller/IGuestCreateBookingController';
 import { IListBookingController } from '../../Domain/Booking/Controller/IListBookingController';
 import { IUpdateBookingController } from '../../Domain/Booking/Controller/IUpdateBookingController';
 import {
@@ -17,25 +14,13 @@ import { Api } from './Api';
 
 class BookingRoute extends Api {
   public async register(): Promise<void> {
-    await this.registerGuestCreateBookingRoute();
-    await this.registerGetBookingStatsRoute();
     await this.registerCreateBookingRoute();
+    await this.registerGetBookingStatsRoute();
     await this.registerListBookingsRoute();
     await this.registerGetBookingRoute();
     await this.registerUpdateBookingRoute();
     await this.registerUpdateBookingDateRoute();
     await this.registerCancelBookingRoute();
-  }
-
-  private async registerGuestCreateBookingRoute(): Promise<void> {
-    const controller = await this.getController(IGuestCreateBookingController);
-
-    this.addHttpRoute({
-      controller,
-      methods: HttpRequestMethod.POST,
-      path: '/bookings',
-      version: BookingRoute.VERSION,
-    });
   }
 
   private async registerGetBookingStatsRoute(): Promise<void> {

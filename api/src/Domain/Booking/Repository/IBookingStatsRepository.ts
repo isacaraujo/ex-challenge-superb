@@ -1,9 +1,10 @@
+import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { BookingStats } from '../Entity/BookingStats';
 
 interface IBookingStatsRepository {
-  consolidateByDateAndTime(date: string, time: number): Promise<BookingStats>;
+  consolidateByDateAndTime(restaurant: Restaurant, date: string, time: number): Promise<BookingStats>;
 
-  consolidateByDate(date: string): Promise<BookingStats[]>;
+  consolidateByDate(restaurant: Restaurant, date: string): Promise<BookingStats[]>;
 }
 
 const IBookingStatsRepository = Symbol.for('IBookingStatsRepository');

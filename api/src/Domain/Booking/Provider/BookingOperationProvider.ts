@@ -1,14 +1,20 @@
 import { IContainerService } from '../../../Core/Container/IContainerService';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { IProvider } from '../../../Core/Provider/IProvider';
+import { CancelBookingOperation } from '../Operation/CancelBookingOperation';
+import { ConfirmBookingOperation } from '../Operation/ConfirmBookingOperation';
 import { CreateBookingOperation } from '../Operation/CreateBookingOperation';
+import { FindNextWaitingBookingOperation } from '../Operation/FindNextWaitingBookingOperation';
+import { GetBookingDateTimeStatsOperation } from '../Operation/GetBookingDateTimeStatsOperation';
 import { GetBookingOperation } from '../Operation/GetBookingOperation';
 import { GetBookingStatsOperation } from '../Operation/GetBookingStatsOperation';
-import { GuestCreateBookingOperation } from '../Operation/GuestCreateBookingOperation';
+import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
+import { IConfirmBookingOperation } from '../Operation/IConfirmBookingOperation';
 import { ICreateBookingOperation } from '../Operation/ICreateBookingOperation';
+import { IFindNextWaitingBookingOperation } from '../Operation/IFindNextScheduledBookingOperation';
+import { IGetBookingDateTimeStatsOperation } from '../Operation/IGetBookingDateTimeStatsOperation';
 import { IGetBookingOperation } from '../Operation/IGetBookingOperation';
 import { IGetBookingStatsOperation } from '../Operation/IGetBookingStatsOperation';
-import { IGuestCreateBookingOperation } from '../Operation/IGuestCreateBookingOperation';
 import { IListBookingOperation } from '../Operation/IListBookingOperation';
 import { IUpdateBookingDateOperation } from '../Operation/IUpdateBookingDateOperation';
 import { IUpdateBookingOperation } from '../Operation/IUpdateBookingOperation';
@@ -17,38 +23,22 @@ import { UpdateBookingDateOperation } from '../Operation/UpdateBookingDateOperat
 import { UpdateBookingOperation } from '../Operation/UpdateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
-import { ICancelBookingOperation } from '../Operation/ICancelBookingOperation';
-import { CancelBookingOperation } from '../Operation/CancelBookingOperation';
+import { INextPendingBookingNotifierService } from '../Service/INextPendingBookingNotifierService';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
 
   public register(): void {
-    this.registerGuestCreateBookingOperation();
     this.registerCreateBookingOperation();
     this.registerListBookingOperation();
     this.registerGetBookingOperation();
     this.registerUpdateBookingOperation();
     this.registerGetBookingStatsOperation();
+    this.registerGetBookingDateTimeStatsOperation();
     this.registerUpdateBookingDateOperation();
     this.registerCancelBookingOperation();
-  }
-
-  private registerGuestCreateBookingOperation(): void {
-    this.container.register(
-      IGuestCreateBookingOperation,
-      async () => {
-        const repository = await this.container
-          .get<IBookingRepository>(IBookingRepository);
-
-        const statsRepository = await this.container
-          .get<IBookingStatsRepository>(IBookingStatsRepository);
-
-        const logger = await this.container
-          .get<ILogger>(ILogger);
-
-        return new GuestCreateBookingOperation(repository, statsRepository, logger);
-      });
+    this.registerFindNextWaitingBookingOperation();
+    this.registerConfirmBookingOperation();
   }
 
   private registerCreateBookingOperation(): void {
@@ -58,13 +48,10 @@ class BookingOperationProvider implements IProvider {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
-        const statsRepository = await this.container
-          .get<IBookingStatsRepository>(IBookingStatsRepository);
-
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new CreateBookingOperation(repository, statsRepository, logger);
+        return new CreateBookingOperation(repository, logger);
       });
   }
 
@@ -131,13 +118,10 @@ class BookingOperationProvider implements IProvider {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
-        const statsRepository = await this.container
-          .get<IBookingStatsRepository>(IBookingStatsRepository);
-
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new UpdateBookingDateOperation(repository, statsRepository, logger);
+        return new UpdateBookingDateOperation(repository, logger);
       });
   }
 
@@ -148,10 +132,55 @@ class BookingOperationProvider implements IProvider {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
+        const notifier = await this.container
+          .get<INextPendingBookingNotifierService>(INextPendingBookingNotifierService);
+
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new CancelBookingOperation(repository, logger);
+        return new CancelBookingOperation(repository, notifier, logger);
+      });
+  }
+
+  private registerGetBookingDateTimeStatsOperation(): void {
+    this.container.register(
+      IGetBookingDateTimeStatsOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingStatsRepository>(IBookingStatsRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new GetBookingDateTimeStatsOperation(repository, logger);
+      });
+  }
+
+  private registerFindNextWaitingBookingOperation(): void {
+    this.container.register(
+      IFindNextWaitingBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new FindNextWaitingBookingOperation(repository, logger);
+      });
+  }
+
+  private registerConfirmBookingOperation(): void {
+    this.container.register(
+      IConfirmBookingOperation,
+      async () => {
+        const repository = await this.container
+          .get<IBookingRepository>(IBookingRepository);
+
+        const logger = await this.container
+          .get<ILogger>(ILogger);
+
+        return new ConfirmBookingOperation(repository, logger);
       });
   }
 }
