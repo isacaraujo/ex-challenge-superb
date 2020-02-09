@@ -52,6 +52,24 @@ services:
     volumes:
       - mongodbdata:/data/db
 
+  superb-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: superb-rabbitmq
+    hostname: superb-rabbitmq
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    ports:
+      - 8092:15672/tcp
+    networks:
+      - backend
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+      - RABBITMQ_DEFAULT_VHOST=local
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq/
+
 networks:
   backend:
     driver: bridge
@@ -59,3 +77,5 @@ networks:
 volumes:
   mongodbdata:
     name: mongodbdata
+  rabbitmqdata:
+    name: rabbitmqdata

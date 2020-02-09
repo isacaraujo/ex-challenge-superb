@@ -1,5 +1,7 @@
 import { IKoaHttpServerOptions } from '../Core/Http/Server/Adapter/Koa/IKoaHttpServerOptions';
 import { IWinstonConfiguration } from '../Core/Logger/Driver/Winston/IWinstonConfiguration';
+import { IRabitmqConfiguration } from '../Core/Queue/Adapter/Rabbitmq/IRabitmqConfiguration';
+import { Adapters as QueueAdapters } from '../Core/Queue/Adapters';
 import { IApplicationConfiguration } from './IApplicationConfiguration';
 
 class ApplicationConfiguration implements IApplicationConfiguration {
@@ -32,6 +34,20 @@ class ApplicationConfiguration implements IApplicationConfiguration {
 
   public databaseUrl(): string {
     return 'mongodb://superb-mongo:27017/superb?poolSize=4';
+  }
+
+  public queueDriver(): QueueAdapters {
+    return QueueAdapters.RABBITMQ;
+  }
+
+  public rabbitmqConfigurations(): IRabitmqConfiguration {
+    return {
+      hostname: 'superb-rabbitmq',
+      port: 5672,
+      vhost: 'local',
+      username: 'root',
+      password: 'root',
+    };
   }
 }
 
