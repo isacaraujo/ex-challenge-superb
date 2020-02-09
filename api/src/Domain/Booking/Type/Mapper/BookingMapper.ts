@@ -56,6 +56,16 @@ class BookingMapper {
     return this.booking.Status;
   }
 
+  @serialize
+  public get RestaurantId(): string {
+    return this.booking.RestaurantId;
+  }
+
+  @serialize
+  public get ReservationDate(): Date {
+    return this.booking.ReservationDate;
+  }
+
   public static create(booking: Booking): BookingMapper {
     return new BookingMapper(booking);
   }

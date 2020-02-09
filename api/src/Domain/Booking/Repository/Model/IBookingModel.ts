@@ -13,6 +13,8 @@ interface IBookingModel extends Document {
   guest: IBookingGuestModel;
   totalGuests: number;
   status: BookingStatus;
+  restaurantId: string;
+  reservationDate: Date;
 }
 
 const IBookingModel = Symbol.for('IBookingModel');

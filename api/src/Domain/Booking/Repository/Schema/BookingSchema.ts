@@ -12,6 +12,8 @@ const BookingSchema: SchemaDefinition = {
   guest: BookingGuestSchema,
   totalGuests: Number,
   status: String,
+  restaurantId: String,
+  reservationDate: Date,
 };
 
 export { BookingSchema };
