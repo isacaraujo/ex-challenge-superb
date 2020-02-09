@@ -83,7 +83,7 @@ describe('GuestCreateBookingOperation', () => {
         .resolves();
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, bookingTime)
+        .withArgs(restaurant, bookingDate, bookingTime)
         .resolves(stats);
 
       command = new CreateBookingCommand(
@@ -114,7 +114,7 @@ describe('GuestCreateBookingOperation', () => {
         .resolves();
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, bookingTime)
+        .withArgs(restaurant, bookingDate, bookingTime)
         .resolves(stats);
 
       command = new CreateBookingCommand(
@@ -145,7 +145,7 @@ describe('GuestCreateBookingOperation', () => {
         .resolves();
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, bookingTime)
+        .withArgs(restaurant, bookingDate, bookingTime)
         .resolves(stats);
 
       command = new CreateBookingCommand(
@@ -179,7 +179,7 @@ describe('GuestCreateBookingOperation', () => {
         .resolves();
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, Restaurant.DAY_IN_HOURS + time)
+        .withArgs(restaurant, bookingDate, Restaurant.DAY_IN_HOURS + time)
         .resolves(stats);
 
       command = new CreateBookingCommand(
@@ -237,7 +237,7 @@ describe('GuestCreateBookingOperation', () => {
         .rejects(error);
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, bookingTime)
+        .withArgs(restaurant, bookingDate, bookingTime)
         .resolves(stats);
 
       command = new CreateBookingCommand(
@@ -270,7 +270,7 @@ describe('GuestCreateBookingOperation', () => {
         .rejects(error);
 
       bookingStatsRepository.consolidateByDateAndTime
-        .withArgs(bookingDate, bookingTime)
+        .withArgs(restaurant, bookingDate, bookingTime)
         .resolves(stats);
 
       command = new CreateBookingCommand(

@@ -56,6 +56,7 @@ class CreateBookingOperation implements ICreateBookingOperation {
   private async shouldConfirmBooking(restaurant: Restaurant, booking: Booking): Promise<boolean> {
     try {
       const bookingStats = await this.bookingStatsRepository.consolidateByDateAndTime(
+        restaurant,
         booking.Date,
         booking.Time
       );

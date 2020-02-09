@@ -56,6 +56,7 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
   private async hasAvailableTables(restaurant: Restaurant, booking: Booking): Promise<boolean> {
     try {
       const bookingStats = await this.bookingStatsRepository.consolidateByDateAndTime(
+        restaurant,
         booking.Date,
         booking.Time
       );

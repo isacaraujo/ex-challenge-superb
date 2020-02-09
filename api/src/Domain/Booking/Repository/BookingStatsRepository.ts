@@ -7,6 +7,7 @@ import {
     MongooseRepository
 } from '../../../Core/Database/Driver/Mongoose/Repository/MongooseRepository';
 import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
+import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { BookingStats } from '../Entity/BookingStats';
 import { BookingStatus } from '../Entity/BookingStatus';
 import { BookingRepository } from './BookingRepository';
@@ -43,7 +44,7 @@ class BookingStatsRepository extends MongooseRepository<IBookingModel> implement
     }
   }
 
-  public async consolidateByDateAndTime(date: string, time: number): Promise<BookingStats> {
+  public async consolidateByDateAndTime(_restaurant: Restaurant, date: string, time: number): Promise<BookingStats> {
     try {
       const results = await this.documentModel.aggregate([
         {
