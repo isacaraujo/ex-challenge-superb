@@ -3,11 +3,16 @@ import { ILogger } from '../../../Core/Logger/ILogger';
 import { Booking } from '../Entity/Booking';
 import { CancelBookingGenericError } from '../Error/Operation/CancelBookingGenericError';
 import { IBookingRepository } from '../Repository/IBookingRepository';
+import { INextPendingBookingNotifierService } from '../Service/INextPendingBookingNotifierService';
+import {
+    NextPendingBookingNotifyCommand
+} from '../Type/Command/Service/NextPendingBookingNotifyCommand';
 import { ICancelBookingOperation } from './ICancelBookingOperation';
 
 class CancelBookingOperation implements ICancelBookingOperation {
   public constructor(
-    private readonly repository: IBookingRepository,
+    private readonly bookingRepository: IBookingRepository,
+    private readonly pendingBookingNotifier: INextPendingBookingNotifierService,
     private readonly logger: ILogger
   ) {}
 
@@ -15,7 +20,14 @@ class CancelBookingOperation implements ICancelBookingOperation {
     try {
       booking.cancel();
 
-      await this.repository.update(booking);
+      await this.bookingRepository.update(booking);
+
+      const notification = NextPendingBookingNotifyCommand.create(
+        booking.Date,
+        booking.Time
+      );
+
+      void this.pendingBookingNotifier.notify(notification);
     } catch (error) {
       this.throwSpecificErrorBasedOn(error);
     }

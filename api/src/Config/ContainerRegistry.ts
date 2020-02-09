@@ -10,6 +10,7 @@ import { BookingControllerProvider } from '../Domain/Booking/Provider/BookingCon
 import { BookingOperationProvider } from '../Domain/Booking/Provider/BookingOperationProvider';
 import { BookingQueueProvider } from '../Domain/Booking/Provider/BookingQueueProvider';
 import { BookingRepositoryProvider } from '../Domain/Booking/Provider/BookingRepositoryProvider';
+import { BookingServiceProvider } from '../Domain/Booking/Provider/BookingServiceProvider';
 import { BookingValidationProvider } from '../Domain/Booking/Provider/BookingValidationProvider';
 import { HealthProvider } from '../Domain/Health/Provider/HealthProvider';
 import {
@@ -36,6 +37,7 @@ class ContainerRegistry {
     RestaurantValidationProvider,
     RestaurantControllerProvider,
     BookingRepositoryProvider,
+    BookingServiceProvider,
     BookingOperationProvider,
     BookingValidationProvider,
     BookingControllerProvider,

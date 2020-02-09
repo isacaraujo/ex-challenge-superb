@@ -23,6 +23,7 @@ import { UpdateBookingDateOperation } from '../Operation/UpdateBookingDateOperat
 import { UpdateBookingOperation } from '../Operation/UpdateBookingOperation';
 import { IBookingRepository } from '../Repository/IBookingRepository';
 import { IBookingStatsRepository } from '../Repository/IBookingStatsRepository';
+import { INextPendingBookingNotifierService } from '../Service/INextPendingBookingNotifierService';
 
 class BookingOperationProvider implements IProvider {
   public constructor(private readonly container: IContainerService) {}
@@ -131,10 +132,13 @@ class BookingOperationProvider implements IProvider {
         const repository = await this.container
           .get<IBookingRepository>(IBookingRepository);
 
+        const notifier = await this.container
+          .get<INextPendingBookingNotifierService>(INextPendingBookingNotifierService);
+
         const logger = await this.container
           .get<ILogger>(ILogger);
 
-        return new CancelBookingOperation(repository, logger);
+        return new CancelBookingOperation(repository, notifier, logger);
       });
   }
 
