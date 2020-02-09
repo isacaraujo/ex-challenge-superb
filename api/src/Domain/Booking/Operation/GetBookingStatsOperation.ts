@@ -18,7 +18,8 @@ class GetBookingStatsOperation implements IGetBookingStatsOperation {
     const date = query.Date;
 
     try {
-      const allStats = await this.bookingStatsRepository.consolidateByDate(date);
+      const allStats = await this.bookingStatsRepository
+        .consolidateByDate(restaurant, date);
 
       return this.generateBookingStatsTimeGrid(date, restaurant, allStats);
     } catch (error) {

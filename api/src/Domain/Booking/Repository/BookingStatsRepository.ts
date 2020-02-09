@@ -20,7 +20,7 @@ class BookingStatsRepository extends MongooseRepository<IBookingModel> implement
     super(connection, BookingRepository.COLLECTION, BookingSchema);
   }
 
-  public async consolidateByDate(date: string): Promise<BookingStats[]> {
+  public async consolidateByDate(_restaurant: Restaurant, date: string): Promise<BookingStats[]> {
     try {
       const results = await this.documentModel.aggregate([
         {
