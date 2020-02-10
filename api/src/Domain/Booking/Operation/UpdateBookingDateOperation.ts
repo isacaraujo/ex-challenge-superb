@@ -7,7 +7,6 @@ import { Restaurant } from '../../Restaurant/Entity/Restaurant';
 import { BookingOutOfTimeRangeError } from '../Error/Operation/BookingOutOfTimeRangeError';
 import { BookingNoTablesLeftError } from '../Error/Operation/BookingNoTablesLeftError';
 import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError';
-import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
 import { UpdateBookingGenericError } from '../Error/Operation/UpdateBookingGenericError';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { BookingStats } from '../Entity/BookingStats';
@@ -79,7 +78,6 @@ class UpdateBookingDateOperation implements IUpdateBookingDateOperation {
   private throwSpecificErrorBasedOn(error: Error): void {
     switch (error.constructor) {
       case SaveRecordError:
-      case AggregateRecordError:
         const recordError = error as SaveRecordError;
 
         this.logger.error(

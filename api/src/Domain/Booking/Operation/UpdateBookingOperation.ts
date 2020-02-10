@@ -35,9 +35,10 @@ class UpdateBookingOperation implements IUpdateBookingOperation {
 
         throw new UpdateBookingGenericError();
       default:
-        const message = `CreateBookingGenericError: ${error.constructor.name}: ${error.message}`;
-
-        this.logger.error(message, { error });
+        this.logger.error(
+          `UpdateBookingGenericError: ${error.constructor.name}: ${error.message}`,
+          { error }
+        );
 
         throw new UpdateBookingGenericError();
     }

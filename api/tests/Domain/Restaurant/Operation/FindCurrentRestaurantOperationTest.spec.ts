@@ -79,7 +79,7 @@ describe('FindCurrentRestaurantOperation', () => {
         .rejects(error);
     });
 
-    it('throws CreateBookingGenericError and log error', async () => {
+    it('throws FindRestaurantGenericError and log error', async () => {
       await chai.expect(operation.execute())
         .to.eventually
         .rejected

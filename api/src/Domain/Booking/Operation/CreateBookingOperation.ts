@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 
-import { AggregateRecordError } from '../../../Core/Error/Repository/AggregateRecordError';
 import { SaveRecordError } from '../../../Core/Error/Repository/SaveRecordError';
 import { ILogger } from '../../../Core/Logger/ILogger';
 import { Restaurant } from '../../Restaurant/Entity/Restaurant';
@@ -90,7 +89,6 @@ class CreateBookingOperation implements ICreateBookingOperation {
   private throwSpecificErrorBasedOn(error: Error): void {
     switch (error.constructor) {
       case SaveRecordError:
-      case AggregateRecordError:
         const recordError = error as SaveRecordError;
 
         this.logger.error(
