@@ -42,6 +42,12 @@ If you want to run the static analysis (eslint), execute:
 $ docker-compose exec superb-api npm run eslint
 ```
 
+If you want to run all unit tests, execute:
+
+```
+$ docker-compose exec superb-api npm run test:unit
+```
+
 **DISCLAIMER:** All pieces of the application (website, backoffice and api) were placed here, in a single repository, for the test proposes.
 
 In a real scenario I would split each 'project' in a different repository. So, we would have:
