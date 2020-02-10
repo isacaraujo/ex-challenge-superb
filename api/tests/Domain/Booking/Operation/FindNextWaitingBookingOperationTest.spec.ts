@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
+import * as _ from 'lodash';
 import { describe } from 'mocha';
 import * as sinon from 'sinon';
 
@@ -10,20 +11,38 @@ import {
     BookingNotFoundError
 } from '../../../../src/Domain/Booking/Error/Operation/BookingNotFoundError';
 import {
-    FindBookingGenericError
-} from '../../../../src/Domain/Booking/Error/Operation/FindBookingGenericError';
-import { GetBookingOperation } from '../../../../src/Domain/Booking/Operation/GetBookingOperation';
+    FindNextWaitingBookingOperation
+} from '../../../../src/Domain/Booking/Operation/FindNextWaitingBookingOperation';
 import { BookingRepository } from '../../../../src/Domain/Booking/Repository/BookingRepository';
+import {
+    FindNextWaitingBookingQuery
+} from '../../../../src/Domain/Booking/Type/Query/FindNextWaitingBookingQuery';
+import { createRestaurant } from '../../../Support/Factories';
+import { FindBookingGenericError } from '../../../../src/Domain/Booking/Error/Operation/FindBookingGenericError';
 
 chai.use(chaiAsPromised);
 
-describe('GetBookingOperation', () => {
+const createQuery = (args: Partial<FindNextWaitingBookingQuery> = {}): FindNextWaitingBookingQuery => {
+  const options = _.merge({
+    Restaurant: createRestaurant(),
+    Date: '2020-03-02',
+    Time: 10
+  }, args);
+
+  return new FindNextWaitingBookingQuery(
+    options.Restaurant,
+    options.Date,
+    options.Time
+  );
+}
+
+describe('FindNextWaitingBookingOperation', () => {
   let sandbox: sinon.SinonSandbox;
 
   let logger: sinon.SinonStubbedInstance<Logger>;
   let bookingRepository: sinon.SinonStubbedInstance<BookingRepository>;
 
-  let operation: GetBookingOperation;
+  let operation: FindNextWaitingBookingOperation;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -31,7 +50,7 @@ describe('GetBookingOperation', () => {
     logger = sandbox.createStubInstance(Logger);
     bookingRepository = sandbox.createStubInstance(BookingRepository);
 
-    operation = new GetBookingOperation(
+    operation = new FindNextWaitingBookingOperation(
       bookingRepository,
       logger
     );
@@ -42,20 +61,21 @@ describe('GetBookingOperation', () => {
   });
 
   describe('when repository throw RecordNotFoundError', () => {
-    let bookingId: string;
+    let query: FindNextWaitingBookingQuery;
 
     beforeEach(() => {
       const error = new RecordNotFoundError('not found');
-      bookingId = 'anybookingid';
+
+      query = createQuery();
 
       bookingRepository
-        .findOneById
-        .withArgs(bookingId)
-        .rejects(error);
+        .findNextPending
+        .withArgs(query.Restaurant, query.Date, query.Time)
+        .rejects(error)
     });
 
     it('throw BookingNotFoundError', async () => {
-      await chai.expect(operation.execute(bookingId))
+      await chai.expect(operation.execute(query))
         .to.eventually
         .rejected
         .instanceOf(BookingNotFoundError);
@@ -63,22 +83,21 @@ describe('GetBookingOperation', () => {
   });
 
   describe('when repository throw FindRecordError', () => {
-    let bookingId: string;
-    const originalError = new Error('any error');
+    let query: FindNextWaitingBookingQuery;
+    let originalError = new Error('any error');
 
     beforeEach(() => {
       const error = new FindRecordError('error', originalError);
 
-      bookingId = 'anybookingid';
+      query = createQuery();
 
-      bookingRepository
-        .findOneById
-        .withArgs(bookingId)
-        .rejects(error);
+      bookingRepository.findNextPending
+        .withArgs(query.Restaurant, query.Date, query.Time)
+        .rejects(error)
     });
 
     it('throw FindBookingGenericError', async () => {
-      await chai.expect(operation.execute(bookingId))
+      await chai.expect(operation.execute(query))
         .to.eventually
         .rejected
         .instanceOf(FindBookingGenericError);

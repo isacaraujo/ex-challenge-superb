@@ -28,7 +28,7 @@ class ConfirmBookingOperation implements IConfirmBookingOperation {
     }
   }
 
-  private validate(restaurant: Restaurant,stats: BookingStats): void {
+  private validate(restaurant: Restaurant, stats: BookingStats): void {
     if (stats.TotalConfirmed >= restaurant.TablesCount) {
       throw new BookingNoTablesLeftError();
     }
